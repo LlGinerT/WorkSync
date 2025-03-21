@@ -1,6 +1,5 @@
 package com.synctech.worksync.domain.repositories
 
-import com.synctech.worksync.domain.domainModels.MockUserModel
 
 /**
  * Interfaz para autenticación de usuarios.
