@@ -1,11 +1,16 @@
 package com.synctech.worksync.ui.screen
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.synctech.worksync.ui.components.ElevatedCardsGrid
 import com.synctech.worksync.ui.theme.WorkSyncTheme
@@ -26,7 +31,9 @@ fun WorkScreen(
 ) {
     // Recoge el estado del ViewModel y se asegura de que se actualice con el ciclo de vida
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    WorkContent(uiState, modifier)
+    // Verifica si el usuario es administrador
+    val isAdmin = uiState.user?.isAdmin ?: false
+    WorkContent(uiState, isAdmin, modifier)
 }
 
 /**
@@ -38,13 +45,14 @@ fun WorkScreen(
 @Composable
 fun WorkContent(
     uiState: WorkState,
+    isAdmin: Boolean,
     modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        // Si se está cargando, muestra el indicador de progreso
+
         if (uiState.showLoadingIndicator) {
             CircularProgressIndicator()
         } else {
@@ -53,6 +61,18 @@ fun WorkContent(
                 works = uiState.works
             )
         }
+// Mostrar un ícono de agregar si el usuario es administrador
+        if (isAdmin) {
+            FloatingActionButton(
+                onClick = { /* Acción para agregar trabajo */ },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Agregar Trabajo")
+            }
+        }
+
     }
 }
 
@@ -64,7 +84,9 @@ fun WorkContent(
 fun WorkScreenPreview() {
     WorkSyncTheme {
         WorkContent(
-            uiState = WorkState(showLoadingIndicator = false, works = emptyList())
+            uiState = WorkState(showLoadingIndicator = false, works = emptyList()),
+            isAdmin = TODO(),
+            modifier = TODO()
         )
     }
 }

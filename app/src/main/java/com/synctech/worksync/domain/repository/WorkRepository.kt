@@ -1,5 +1,6 @@
 package com.synctech.worksync.domain.repository
 
+import com.synctech.worksync.domain.models.User
 import com.synctech.worksync.domain.models.Work
 
 /**
@@ -13,5 +14,6 @@ interface WorkRepository {
      *
      * @return Una lista de objetos [Work] que representan los trabajos disponibles.
      */
-    fun getWork(): List<Work>
+
+    fun getWork(user: User): List<Work>
 }

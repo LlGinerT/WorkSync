@@ -25,5 +25,6 @@ data class Work(
     val jobName: String,
     val clientName: String,
     val description: String,
-    val address: String
+    val address: String,
+    val assignedTo: User? = null
 )

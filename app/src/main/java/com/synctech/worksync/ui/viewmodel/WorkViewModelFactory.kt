@@ -2,6 +2,7 @@ package com.synctech.worksync.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.synctech.worksync.domain.models.User
 import com.synctech.worksync.domain.useCases.GetWorkUseCase
 
 /**
@@ -11,7 +12,8 @@ import com.synctech.worksync.domain.useCases.GetWorkUseCase
  * Este parámetro se inyecta en el [WorkViewModel] para acceder y proporcionar los datos de trabajo.
  */
 class WorkViewModelFactory(
-    private val getWorkUseCase: GetWorkUseCase
+    private val getWorkUseCase: GetWorkUseCase,
+    private val currentUser: User // Añadimos el usuario
 ) : ViewModelProvider.Factory {
 
     /**
@@ -23,7 +25,7 @@ class WorkViewModelFactory(
      */
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(WorkViewModel::class.java)) {
-            return WorkViewModel(getWorkUseCase) as T
+            return WorkViewModel(getWorkUseCase, currentUser) as T
         }
         throw IllegalArgumentException("Clase ViewModel desconocida")
     }

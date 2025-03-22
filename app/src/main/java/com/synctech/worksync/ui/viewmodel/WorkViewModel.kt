@@ -2,6 +2,7 @@ package com.synctech.worksync.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.synctech.worksync.domain.models.User
 import com.synctech.worksync.domain.useCases.GetWorkUseCase
 import com.synctech.worksync.ui.models.toUI
 import kotlinx.coroutines.Dispatchers
@@ -17,10 +18,11 @@ import kotlinx.coroutines.withContext
  * @param getWorkUseCase Caso de uso para obtener los trabajos.
  */
 class WorkViewModel(
-    private val getWorkUseCase: GetWorkUseCase
+    private val getWorkUseCase: GetWorkUseCase,
+    private val currentUser: User // Recibe el usuario actual con su rol.
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(WorkState())
+    private val _uiState = MutableStateFlow(WorkState(user   =  currentUser))
     val uiState: StateFlow<WorkState> = _uiState
 
     init {
@@ -37,7 +39,7 @@ class WorkViewModel(
         try {
             // Realizar la operación de obtención de datos en un hilo en segundo plano
             val workDomain = withContext(Dispatchers.IO) {
-                getWorkUseCase()
+                getWorkUseCase(currentUser)
             }
 
             // Convertir los datos del dominio al modelo de UI

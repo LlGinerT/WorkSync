@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.synctech.worksync.data.repository.FakeWorkDataRepository
+import com.synctech.worksync.domain.models.User
 import com.synctech.worksync.domain.useCases.GetWorkUseCase
 import com.synctech.worksync.ui.screen.WorkScreen
 import com.synctech.worksync.ui.theme.WorkSyncTheme
@@ -20,7 +21,8 @@ import com.synctech.worksync.ui.viewmodel.WorkViewModelFactory
 class MainActivity : ComponentActivity() {
     private val workViewModel: WorkViewModel by viewModels {
         val getWorkUseCase = GetWorkUseCase(FakeWorkDataRepository())
-        WorkViewModelFactory(getWorkUseCase)
+        val currentUser = User(username = "admin", isAdmin = true) // Aquí definimos que el usuario es admin
+        WorkViewModelFactory(getWorkUseCase,currentUser)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
