@@ -13,6 +13,12 @@ import com.synctech.worksync.ui.viewmodel.WorkState
 import com.synctech.worksync.ui.viewmodel.WorkViewModel
 import com.synctech.worksync.ui.models.toUI
 
+/**
+ * Pantalla principal que muestra los trabajos.
+ *
+ * @param viewModel El ViewModel que contiene la lógica y estado para gestionar los trabajos.
+ * @param modifier Modificador opcional para personalizar el diseño de la pantalla.
+ */
 @Composable
 fun WorkScreen(
     viewModel: WorkViewModel,
@@ -23,6 +29,12 @@ fun WorkScreen(
     WorkContent(uiState, modifier)
 }
 
+/**
+ * Contenido de la pantalla de trabajos.
+ *
+ * @param uiState El estado de la interfaz de usuario que contiene los trabajos y el indicador de carga.
+ * @param modifier Modificador opcional para personalizar el diseño de los componentes dentro de la pantalla.
+ */
 @Composable
 fun WorkContent(
     uiState: WorkState,
@@ -32,10 +44,11 @@ fun WorkContent(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
+        // Si se está cargando, muestra el indicador de progreso
         if (uiState.showLoadingIndicator) {
             CircularProgressIndicator()
         } else {
-
+            // Si no se está cargando, muestra los trabajos en una cuadrícula
             ElevatedCardsGrid(
                 works = uiState.works
             )
@@ -43,6 +56,9 @@ fun WorkContent(
     }
 }
 
+/**
+ * @param WorkScreenPreview Vista previa de la pantalla de trabajos.
+ */
 @Preview(showBackground = true)
 @Composable
 fun WorkScreenPreview() {

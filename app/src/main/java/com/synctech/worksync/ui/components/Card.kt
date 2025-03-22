@@ -16,6 +16,12 @@ import androidx.compose.ui.unit.dp
 import com.synctech.worksync.ui.models.WorkUIModel
 import com.synctech.worksync.ui.theme.WorkSyncTheme
 
+/**
+ * Componente que representa una tarjeta elevada con la información de un trabajo.
+ *
+ * @param work El objeto `WorkUIModel` que contiene la información de un trabajo,
+ *             incluyendo el nombre del trabajo, cliente, descripción y dirección.
+ */
 @Composable
 fun ElevatedCard(work: WorkUIModel) {
     ElevatedCard(
@@ -32,6 +38,7 @@ fun ElevatedCard(work: WorkUIModel) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
+
             Text(
                 text = "Trabajo: ${work.jobName}",
                 style = MaterialTheme.typography.bodyMedium,
@@ -39,6 +46,7 @@ fun ElevatedCard(work: WorkUIModel) {
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )
+
             Text(
                 text = "Cliente: ${work.clientName}",
                 style = MaterialTheme.typography.bodyMedium,
@@ -46,6 +54,7 @@ fun ElevatedCard(work: WorkUIModel) {
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )
+
             Text(
                 text = "Descripción: ${work.description}",
                 style = MaterialTheme.typography.bodyMedium,
@@ -53,6 +62,7 @@ fun ElevatedCard(work: WorkUIModel) {
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )
+
             Text(
                 text = "Dirección: ${work.address}",
                 style = MaterialTheme.typography.bodyMedium,
@@ -60,11 +70,16 @@ fun ElevatedCard(work: WorkUIModel) {
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )
-
         }
     }
 }
 
+/**
+ * Componente que muestra una cuadrícula de tarjetas elevadas con los trabajos proporcionados.
+ *
+ * @param works Lista de objetos `WorkUIModel` que contienen la información de los trabajos
+ *              que se mostrarán en la cuadrícula.
+ */
 @Composable
 fun ElevatedCardsGrid(
     works: List<WorkUIModel> // Recibe una lista de trabajos
@@ -79,11 +94,14 @@ fun ElevatedCardsGrid(
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         items(works) { work ->
-            ElevatedCard(work = work) // Pasa cada trabajo individual
+            ElevatedCard(work = work) // Pasa cada trabajo individual a la tarjeta
         }
     }
 }
 
+/**
+ *  ElevatedCardPreview Vista previa de la tarjeta elevada con una cuadrícula de trabajos.
+ */
 @Preview(showBackground = true)
 @Composable
 fun ElevatedCardPreview() {

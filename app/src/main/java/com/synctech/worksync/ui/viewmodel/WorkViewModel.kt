@@ -11,6 +11,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * ViewModel para la gestión de trabajos.
+ *
+ * @param getWorkUseCase Caso de uso para obtener los trabajos.
+ */
 class WorkViewModel(
     private val getWorkUseCase: GetWorkUseCase
 ) : ViewModel() {
@@ -22,6 +27,9 @@ class WorkViewModel(
         fetchWorks()
     }
 
+    /**
+     * Método para obtener los trabajos y actualizar el estado del UI.
+     */
     private fun fetchWorks() = viewModelScope.launch {
         // Mostrar el indicador de carga mientras se obtiene la información
         _uiState.update { it.copy(showLoadingIndicator = true) }

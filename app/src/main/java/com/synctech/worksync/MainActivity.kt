@@ -19,7 +19,7 @@ import com.synctech.worksync.ui.viewmodel.WorkViewModelFactory
 
 class MainActivity : ComponentActivity() {
     private val workViewModel: WorkViewModel by viewModels {
-        val getWorkUseCase = GetWorkUseCase(FakeWorkDataRepository()) // Si usas FakeWorkDataRepository o algún repositorio similar.
+        val getWorkUseCase = GetWorkUseCase(FakeWorkDataRepository())
         WorkViewModelFactory(getWorkUseCase)
     }
 
