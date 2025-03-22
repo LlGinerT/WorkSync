@@ -18,7 +18,7 @@ data class WorkUIModel(
 // Extensión para convertir de dominio a UI
 fun Works.toUI() = WorksUIModel(
     title = this.title,
-    works = this.work.map { it.toUI() }
+    works = this.works.map { it.toUI() }
 )
 
 fun Work.toUI() = WorkUIModel(

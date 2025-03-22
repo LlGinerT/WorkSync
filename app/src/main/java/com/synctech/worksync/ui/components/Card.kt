@@ -47,19 +47,20 @@ fun ElevatedCard(work: WorkUIModel) {
                 textAlign = TextAlign.Start
             )
             Text(
-                text = "Dirección: ${work.address}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Start
-            )
-            Text(
                 text = "Descripción: ${work.description}",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )
+            Text(
+                text = "Dirección: ${work.address}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start
+            )
+
         }
     }
 }
@@ -90,7 +91,11 @@ fun ElevatedCardPreview() {
         ElevatedCardsGrid(
             works = listOf(
                 WorkUIModel("Trabajo 1", "Cliente 1", "Descripción 1", "Dirección 1"),
-                WorkUIModel("Trabajo 2", "Cliente 2", "Descripción 2", "Dirección 2")
+                WorkUIModel("Trabajo 2", "Cliente 2", "Descripción 2", "Dirección 2"),
+                WorkUIModel("Trabajo 3", "Cliente 3", "Descripción 3", "Dirección 3"),
+                WorkUIModel("Trabajo 4", "Cliente 4", "Descripción 4", "Dirección 4"),
+                WorkUIModel("Trabajo 5", "Cliente 5", "Descripción 5", "Dirección 5"),
+                WorkUIModel("Trabajo 6", "Cliente 6", "Descripción 6", "Dirección 6")
             )
         )
     }
