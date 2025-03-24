@@ -85,7 +85,7 @@ class LoginViewModel(
                     emailError = null,
                     passwordError = null
                 )
-            } else { //Si no logra autenticar solo significa que la contraseña es incorrecta
+            } else { //Si no logra autenticar, solo puede significar que la contraseña es incorrecta
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     emailError = null,

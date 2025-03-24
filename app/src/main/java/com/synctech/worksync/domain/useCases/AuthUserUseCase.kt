@@ -1,6 +1,6 @@
 package com.synctech.worksync.domain.useCases
 
-import com.synctech.worksync.domain.domainModels.WorkerModel
+import com.synctech.worksync.domain.domainModels.WorkerDomainModel
 import com.synctech.worksync.domain.repositories.UserAuthRepository
 import com.synctech.worksync.domain.repositories.WorkersRepository
 
@@ -21,7 +21,7 @@ class AuthUserUseCase(
      * @param password Contraseña del usuario.
      * @return El perfil del trabajador si la autenticación es exitosa, o `null` si falla.
      */
-    operator fun invoke(email: String, password: String): WorkerModel? {
+    operator fun invoke(email: String, password: String): WorkerDomainModel? {
         val userId = userAuthRepository.authUser(email, password)
         return userId?.let { workersRepository.getWorker(it) }
     }

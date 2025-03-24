@@ -1,7 +1,7 @@
 package com.synctech.worksync.ui.session
 
 import androidx.lifecycle.ViewModel
-import com.synctech.worksync.domain.domainModels.WorkerModel
+import com.synctech.worksync.domain.domainModels.WorkerDomainModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,16 +11,16 @@ import kotlinx.coroutines.flow.asStateFlow
  */
 class SessionViewModel : ViewModel() {
 
-    private val _worker = MutableStateFlow<WorkerModel?>(null)
-    val worker: StateFlow<WorkerModel?> = _worker.asStateFlow()
+    private val _worker = MutableStateFlow<WorkerDomainModel?>(null)
+    val worker: StateFlow<WorkerDomainModel?> = _worker.asStateFlow()
 
     /**
      * Establece el trabajador autenticado en sesión.
      *
-     * @param workerModel Modelo del trabajador.
+     * @param workerDomainModel Modelo del trabajador.
      */
-    fun setWorker(workerModel: WorkerModel) {
-        _worker.value = workerModel
+    fun setWorker(workerDomainModel: WorkerDomainModel) {
+        _worker.value = workerDomainModel
     }
 
     /**
