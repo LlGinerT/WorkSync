@@ -1,12 +1,12 @@
 package com.synctech.worksync.ui.session
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synctech.worksync.domain.domainModels.WorkerDomainModel
 import com.synctech.worksync.domain.useCases.SaveWorkSessionUseCase
+import com.synctech.worksync.ui.uiModels.WorkerUiModel
+import com.synctech.worksync.ui.uiModels.toUi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +14,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.time.Instant
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
  * ViewModel compartido que gestiona la sesión activa del usuario autenticado.
@@ -30,16 +32,13 @@ class SessionViewModel(
     private val saveWorkSessionUseCase: SaveWorkSessionUseCase
 ) : ViewModel() {
 
-    private val _worker = MutableStateFlow<WorkerDomainModel?>(null)
-    val worker: StateFlow<WorkerDomainModel?> = _worker.asStateFlow()
+    private val _state = MutableStateFlow(SessionState())
+    val state: StateFlow<SessionState> = _state.asStateFlow()
 
-    // Contador interno en segundos desde que inició la jornada
-    private val _secondsWorked = MutableStateFlow(0)
-    val secondsWorked: StateFlow<Int> = _secondsWorked.asStateFlow()
-
-    // Timestamps de inicio y fin de sesión (en milisegundos). Se cambiarán por Firebase Timestamp más adelante.
-    private var sessionStart: Long? = null
-    private var sessionEnd: Long? = null
+    private val domainWorker: WorkerDomainModel? get() = _state.value.domainWorker
+    val uiWorker: WorkerUiModel? get() = _state.value.domainWorker?.toUi()
+    val secondsWorked: Int get() = _state.value.secondsWorked
+    val sessionStart: Long? get() = _state.value.sessionStart
 
     // Job que representa la corutina activa del cronómetro
     private var timerJob: Job? = null
@@ -48,14 +47,14 @@ class SessionViewModel(
      * Inicia el cronómetro si no está ya activo y almacena un TimeStamp.
      */
     private fun startTimer() {
-        sessionStart = System.currentTimeMillis() // ⚠️ TODO: Sustituir por Firebase Timestamp
-
         if (timerJob?.isActive == true) return
         timerJob = viewModelScope.launch {
             while (isActive) {
                 delay(1000)
-                _secondsWorked.value += 1
-                Log.i("SessionViewModel", "Crono funciona: ${getFormattedWorkedTime()}")
+                _state.value = _state.value.copy(
+                    secondsWorked = _state.value.secondsWorked + 1
+                )
+                Log.i("SessionViewModel", "Crono: ${getFormattedWorkedTime()}")
             }
         }
     }
@@ -74,9 +73,15 @@ class SessionViewModel(
      * @param workerDomainModel Modelo del trabajador.
      */
     fun setWorker(workerDomainModel: WorkerDomainModel) {
-        _worker.value = workerDomainModel
+        _state.value = _state.value.copy(
+            domainWorker = workerDomainModel,
+            sessionStart = System.currentTimeMillis(),
+            secondsWorked = 0
+        )
         startTimer()
+        Log.d("SessionViewModel","TimeStamp: ${getFormattedStartedSession()}")
     }
+
 
     /**
      * Finaliza la sesión del usuario:
@@ -86,8 +91,8 @@ class SessionViewModel(
      */
     fun logout() {
         val end = System.currentTimeMillis()
-        val start = sessionStart
-        val user = _worker.value
+        val start = _state.value.sessionStart
+        val user = _state.value.domainWorker
 
         if (user != null && start != null) {
             viewModelScope.launch {
@@ -106,9 +111,7 @@ class SessionViewModel(
         }
 
         stopTimer()
-        _worker.value = null
-        sessionStart = null
-        _secondsWorked.value = 0
+        _state.value = SessionState() //Función recursiva que reinicia el estado completo
     }
 
     /**
@@ -117,7 +120,7 @@ class SessionViewModel(
      *  @return Tiempo trabajado en formato HH:MM:SS
      */
     fun getFormattedWorkedTime(): String {
-        val totalSeconds = _secondsWorked.value
+        val totalSeconds = _state.value.secondsWorked
         val hours = totalSeconds / 3600
         val minutes = (totalSeconds % 3600) / 60
         val seconds = totalSeconds % 60
@@ -125,4 +128,19 @@ class SessionViewModel(
         return "%02d:%02d:%02d".format(hours, minutes, seconds)
     }
 
+    /**
+     * Devuelve el TimeStamp formateado
+     *
+     * @return TimeStamp con formato:dd/MM/yyyy HH:mm o TimeStamp no disponible
+     */
+    fun getFormattedStartedSession(): String {
+        val sessionStartInMillis = _state.value.sessionStart
+        if (sessionStartInMillis != null) {
+            val date = Date(sessionStartInMillis)
+            val format = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+            return format.format(date)
+        } else {
+            return "TimeStamp no disponible"
+        }
+    }
 }

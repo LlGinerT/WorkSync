@@ -15,6 +15,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -65,17 +66,22 @@ fun LoginScreen(
 ) {
     val state by loginViewModel.uiState.collectAsState()
 
-    val debugUserLogin by sessionViewModel.worker.collectAsState()//Observamos el sessionViewModel temporalmente
+    val debugUserLogin by sessionViewModel.state.collectAsState()//Observamos el sessionViewModel temporalmente
     // con fines de debug en el desarrollo, eliminar mas adelante
-    if (state.loginSuccess) {
-        onLoginSuccess() // Cuando el estado pase a loginSuccess = true, ejecutara esta acción,
-        // en el mainActivity le pasaremos una acción para navegar a la homeScreen.
-        Log.i("LoginScreen", "Sesion iniciada correctamente")
-        Log.d(
-            "LoginScreenDebug",
-            "userID: ${debugUserLogin?.userId}, name: ${debugUserLogin?.name}, isAdmin: ${debugUserLogin?.isAdmin}"
-        )
+
+    LaunchedEffect(state.loginSuccess) {
+        if (state.loginSuccess) {
+            loginViewModel.clearState()
+            onLoginSuccess() // Cuando el estado pase a loginSuccess = true, ejecutara esta acción,
+            // en el mainActivity le pasaremos una acción para navegar a la homeScreen.
+            Log.i("LoginScreen", "Sesion iniciada correctamente")
+            Log.d(
+                "LoginScreenDebug",
+                "userID: ${debugUserLogin.domainWorker?.userId}, name: ${debugUserLogin.domainWorker?.name}, isAdmin: ${debugUserLogin.domainWorker?.isAdmin}"
+            )
+        }
     }
+
     LoginBackground {
         Column(
             modifier = modifier
@@ -143,11 +149,9 @@ fun LoginScreenPreview() {
         val loginViewModel = LoginViewModel(authUserUseCase)
         val sessionViewModel = SessionViewModel(saveWorkSessionUseCase)
 
-        LoginScreen(
-            loginViewModel = loginViewModel,
+        LoginScreen(loginViewModel = loginViewModel,
             sessionViewModel = sessionViewModel,
-            onLoginSuccess = {}
-        )
+            onLoginSuccess = {})
     }
 }
 

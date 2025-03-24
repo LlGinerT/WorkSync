@@ -11,10 +11,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.synctech.worksync.ui.session.SessionViewModel
-
+/*
 @Composable
 fun UserPanelScreen(sessionViewModel: SessionViewModel) {
-    val worker = sessionViewModel.worker.collectAsState().value
+    val worker = sessionViewModel.domainWorker.collectAsState().value
 
     Column(
         modifier = Modifier
@@ -33,3 +33,4 @@ fun UserPanelScreen(sessionViewModel: SessionViewModel) {
         } ?: Text("Usuario no cargado")
     }
 }
+*/
