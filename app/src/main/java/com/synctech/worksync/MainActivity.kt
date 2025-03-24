@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.synctech.worksync.data.testData.MockUserAuthRepository
+import com.synctech.worksync.data.testData.MockWorkSessionRepository
 import com.synctech.worksync.data.testData.MockWorkersRepository
 import com.synctech.worksync.domain.useCases.AuthUserUseCase
+import com.synctech.worksync.domain.useCases.SaveWorkSessionUseCase
 import com.synctech.worksync.ui.screens.login.LoginScreen
 import com.synctech.worksync.ui.screens.login.LoginViewModel
 import com.synctech.worksync.ui.session.SessionViewModel
@@ -25,11 +27,13 @@ class MainActivity : ComponentActivity() {
         // Mock repos
         val userAuthRepo = MockUserAuthRepository()
         val workersRepo = MockWorkersRepository()
+        val workSessionRepo = MockWorkSessionRepository()
 
         // UseCase + ViewModels
         val authUserUseCase = AuthUserUseCase(userAuthRepo, workersRepo)
+        val saveWorkSessionUseCase = SaveWorkSessionUseCase(workSessionRepo)
         val loginViewModel = LoginViewModel(authUserUseCase)
-        val sessionViewModel = SessionViewModel()
+        val sessionViewModel = SessionViewModel(saveWorkSessionUseCase)
 
         setContent {
             WorkSyncTheme {

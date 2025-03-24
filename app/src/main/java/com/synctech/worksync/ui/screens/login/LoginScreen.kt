@@ -23,8 +23,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.synctech.worksync.data.testData.MockUserAuthRepository
+import com.synctech.worksync.data.testData.MockWorkSessionRepository
 import com.synctech.worksync.data.testData.MockWorkersRepository
 import com.synctech.worksync.domain.useCases.AuthUserUseCase
+import com.synctech.worksync.domain.useCases.SaveWorkSessionUseCase
 import com.synctech.worksync.ui.components.AuthInputField
 import com.synctech.worksync.ui.session.SessionViewModel
 import com.synctech.worksync.ui.theme.WorkSyncTheme
@@ -134,10 +136,12 @@ fun LoginScreenPreview() {
     WorkSyncTheme {
         val mockAuthRepo = MockUserAuthRepository()
         val mockWorkersRepo = MockWorkersRepository()
+        val mockWorkSessionRepository = MockWorkSessionRepository()
         val authUserUseCase = AuthUserUseCase(mockAuthRepo, mockWorkersRepo)
+        val saveWorkSessionUseCase = SaveWorkSessionUseCase(mockWorkSessionRepository)
 
         val loginViewModel = LoginViewModel(authUserUseCase)
-        val sessionViewModel = SessionViewModel()
+        val sessionViewModel = SessionViewModel(saveWorkSessionUseCase)
 
         LoginScreen(
             loginViewModel = loginViewModel,
