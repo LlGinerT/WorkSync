@@ -1,4 +1,5 @@
 package com.synctech.worksync.ui.theme
+
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF715C0C)
@@ -216,10 +217,4 @@ val surfaceContainerLowDarkHighContrast = Color(0xFF1E1B13)
 val surfaceContainerDarkHighContrast = Color(0xFF231F17)
 val surfaceContainerHighDarkHighContrast = Color(0xFF2D2A21)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF38342B)
-
-
-
-
-
-
 
