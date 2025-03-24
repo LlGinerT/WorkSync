@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.synctech.worksync.ui.session.SessionViewModel
 
+//Pantalla creada con fines de prueba
 @Composable
 fun ProfileScreen(sessionViewModel: SessionViewModel) {
     val worker = sessionViewModel.worker.collectAsState().value
