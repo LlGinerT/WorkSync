@@ -94,4 +94,11 @@ class LoginViewModel(
             }
         }
     }
+
+    /**
+     * Metodo que reinicia el estado de la ui.
+     */
+    fun clearState(){
+        _uiState.value = LoginState()
+    }
 }
