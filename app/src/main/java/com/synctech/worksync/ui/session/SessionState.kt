@@ -1,7 +1,6 @@
 package com.synctech.worksync.ui.session
 
 import com.synctech.worksync.domain.domainModels.WorkerDomainModel
-import com.synctech.worksync.ui.uiModels.WorkerUiModel
 
 data class SessionState(
     val domainWorker: WorkerDomainModel? = null,

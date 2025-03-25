@@ -79,7 +79,6 @@ class SessionViewModel(
         Log.d("SessionViewModel","TimeStamp: ${getFormattedStartedSession()}")
     }
 
-
     /**
      * Finaliza la sesión del usuario:
      * - Detiene el cronómetro.
