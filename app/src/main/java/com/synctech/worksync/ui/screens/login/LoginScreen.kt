@@ -5,11 +5,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -74,10 +76,12 @@ fun LoginScreen(
             loginViewModel.clearState()
             onLoginSuccess() // Cuando el estado pase a loginSuccess = true, ejecutara esta acción,
             // en el mainActivity le pasaremos una acción para navegar a la homeScreen.
-            Log.i("LoginScreen", "Sesion iniciada correctamente")
+            Log.i("LoginScreen", "loginSucces = true")
             Log.d(
                 "LoginScreenDebug",
-                "userID: ${debugUserLogin.domainWorker?.userId}, name: ${debugUserLogin.domainWorker?.name}, isAdmin: ${debugUserLogin.domainWorker?.isAdmin}"
+                "userID: ${debugUserLogin.domainWorker?.userId}, " +
+                        "name: ${debugUserLogin.domainWorker?.name}, " +
+                        "isAdmin: ${debugUserLogin.domainWorker?.isAdmin}"
             )
         }
     }
@@ -121,6 +125,19 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Iniciar sesión")
+                }
+                /*
+                Boton con fines de testeo de cerrar sesion hasta que este la navegación
+                */
+                Row(modifier = Modifier.fillMaxWidth(), Arrangement.Center) {
+                    Button(
+                        onClick = { sessionViewModel.logout() },
+                        modifier = Modifier
+                            .height(48.dp)
+                            .width(320.dp)
+                    ) {
+                        Text("Cerrar Sesion", style = MaterialTheme.typography.labelLarge)
+                    }
                 }
             }
         }

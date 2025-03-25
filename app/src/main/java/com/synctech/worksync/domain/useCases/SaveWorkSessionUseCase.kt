@@ -40,6 +40,7 @@ class SaveWorkSessionUseCase(private val repository: WorkSessionRepository) {
         //Bloque Try/Catch con fines de Debug
         try {
             repository.getWorkSessionsByUser(userID)
+            Log.i("SaveWorkSessionUseCase","Sesion guardada: ${repository.getWorkSessionsByUser(userID)}")
         }catch (e: Exception){
             Log.w("SaveWorkSessionUseCase","Sesion no encontrada en el repositorio",e)
         }

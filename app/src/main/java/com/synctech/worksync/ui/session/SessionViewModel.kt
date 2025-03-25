@@ -35,10 +35,7 @@ class SessionViewModel(
     private val _state = MutableStateFlow(SessionState())
     val state: StateFlow<SessionState> = _state.asStateFlow()
 
-    private val domainWorker: WorkerDomainModel? get() = _state.value.domainWorker
     val uiWorker: WorkerUiModel? get() = _state.value.domainWorker?.toUi()
-    val secondsWorked: Int get() = _state.value.secondsWorked
-    val sessionStart: Long? get() = _state.value.sessionStart
 
     // Job que representa la corutina activa del cronómetro
     private var timerJob: Job? = null
@@ -98,6 +95,7 @@ class SessionViewModel(
             viewModelScope.launch {
                 try {
                     saveWorkSessionUseCase(user.userId, start, end)
+                    Log.i("SessionViewModel","Sesion guardada en ViewModel.")
                 } catch (e: Exception) {
                     Log.e("SessionViewModel", "Error al guardar la sesión de trabajo", e)
                 }
