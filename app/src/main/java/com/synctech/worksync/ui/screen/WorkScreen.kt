@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.synctech.worksync.ui.components.ElevatedCardsGrid
+import com.synctech.worksync.ui.models.WorkUIModel
 import com.synctech.worksync.ui.theme.WorkSyncTheme
 import com.synctech.worksync.ui.viewmodel.WorkState
 import com.synctech.worksync.ui.viewmodel.WorkViewModel
@@ -52,7 +53,6 @@ fun WorkContent(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-
         if (uiState.showLoadingIndicator) {
             CircularProgressIndicator()
         } else {
@@ -61,7 +61,8 @@ fun WorkContent(
                 works = uiState.works
             )
         }
-// Mostrar un ícono de agregar si el usuario es administrador
+
+        // Mostrar un ícono de agregar si el usuario es administrador
         if (isAdmin) {
             FloatingActionButton(
                 onClick = { /* Acción para agregar trabajo */ },
@@ -72,21 +73,26 @@ fun WorkContent(
                 Icon(Icons.Default.Add, contentDescription = "Agregar Trabajo")
             }
         }
-
     }
 }
 
 /**
  * @param WorkScreenPreview Vista previa de la pantalla de trabajos.
  */
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 fun WorkScreenPreview() {
     WorkSyncTheme {
         WorkContent(
-            uiState = WorkState(showLoadingIndicator = false, works = emptyList()),
-            isAdmin = TODO(),
-            modifier = TODO()
+            uiState = WorkState(showLoadingIndicator = false, works = listOf(
+                WorkUIModel("Reparación ", "Cliente A", "Reparar", "Calle 123", "admin"),
+                WorkUIModel("Instalación", "Cliente B", "Instalar WIFI", "Avenida 456", "user1"),
+                WorkUIModel("Instalación", "Cliente C", "Instala Cable LAN", "Edificio 789", "user2")
+            )
+            ),
+            isAdmin = true,  // Simulación de usuario administrador
+            modifier = Modifier
         )
     }
-}
+}*/
+

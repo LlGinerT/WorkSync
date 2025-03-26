@@ -16,13 +16,14 @@ import kotlinx.coroutines.withContext
  * ViewModel para la gestión de trabajos.
  *
  * @param getWorkUseCase Caso de uso para obtener los trabajos.
+ * @param currentUser Usuario actual con su rol.
  */
 class WorkViewModel(
     private val getWorkUseCase: GetWorkUseCase,
-    private val currentUser: User // Recibe el usuario actual con su rol.
+    private val currentUser: User // Usuario autenticado
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(WorkState(user   =  currentUser))
+    private val _uiState = MutableStateFlow(WorkState(user = currentUser))
     val uiState: StateFlow<WorkState> = _uiState
 
     init {
@@ -30,25 +31,29 @@ class WorkViewModel(
     }
 
     /**
-     * Método para obtener los trabajos y actualizar el estado del UI.
+     * Obtiene los trabajos y actualiza el estado de la UI.
      */
     private fun fetchWorks() = viewModelScope.launch {
-        // Mostrar el indicador de carga mientras se obtiene la información
         _uiState.update { it.copy(showLoadingIndicator = true) }
 
         try {
-            // Realizar la operación de obtención de datos en un hilo en segundo plano
             val workDomain = withContext(Dispatchers.IO) {
                 getWorkUseCase(currentUser)
             }
 
-            // Convertir los datos del dominio al modelo de UI
             val workUIModel = workDomain.map { it.toUI() }
 
-            // Actualizar el estado con los datos obtenidos
+            // Filtrar los trabajos asignados al usuario si no es admin
+            val filteredWorks = if (currentUser.isAdmin) {
+                workUIModel // Admin ve todos los trabajos
+            } else {
+                workUIModel.filter { it.assignedTo == currentUser.userId } // Usuario normal ve solo los asignados
+            }
+
             _uiState.update {
                 it.copy(
                     works = workUIModel,
+                    filteredWorks = filteredWorks, // Agregamos la lista filtrada
                     showLoadingIndicator = false
                 )
             }

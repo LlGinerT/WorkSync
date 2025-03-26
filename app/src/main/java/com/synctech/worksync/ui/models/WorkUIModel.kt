@@ -26,7 +26,8 @@ data class WorkUIModel(
     val jobName: String,
     val clientName: String,
     val description: String,
-    val address: String
+    val address: String,
+    val assignedTo: String?
 )
 
 /**
@@ -48,5 +49,6 @@ fun Work.toUI() = WorkUIModel(
     jobName = this.jobName,
     clientName = this.clientName,
     description = this.description,
-    address = this.address
+    address = this.address,
+    assignedTo = this.assignedTo // Ahora incluimos el usuario asignado
 )

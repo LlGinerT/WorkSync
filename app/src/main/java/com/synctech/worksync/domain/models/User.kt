@@ -8,6 +8,7 @@ package com.synctech.worksync.domain.models
  * @param isAdmin Indica si el usuario tiene rol de administrador.
  */
 data class User(
+    val userId: String,
     val username: String,
     val isAdmin: Boolean
 )

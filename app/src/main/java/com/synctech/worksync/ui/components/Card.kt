@@ -30,15 +30,15 @@ fun ElevatedCard(work: WorkUIModel) {
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
         modifier = Modifier
-            .size(width = 150.dp, height = 170.dp)
+            .padding(8.dp)  // Padding para mejor separación entre tarjetas
+            .fillMaxWidth()  // Se ajusta al ancho disponible
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(12.dp),  // Ajustamos el padding para mejorar el espacio
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-
             Text(
                 text = "Trabajo: ${work.jobName}",
                 style = MaterialTheme.typography.bodyMedium,
@@ -85,13 +85,13 @@ fun ElevatedCardsGrid(
     works: List<WorkUIModel> // Recibe una lista de trabajos
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Adaptive(minSize = 150.dp),  // Usa un tamaño mínimo de 150.dp para la columna
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         contentPadding = PaddingValues(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(24.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+        horizontalArrangement = Arrangement.spacedBy(16.dp),  // Ajustamos el espacio entre las tarjetas
+        verticalArrangement = Arrangement.spacedBy(16.dp)    // Ajustamos el espacio entre las filas
     ) {
         items(works) { work ->
             ElevatedCard(work = work) // Pasa cada trabajo individual a la tarjeta
@@ -108,12 +108,12 @@ fun ElevatedCardPreview() {
     WorkSyncTheme {
         ElevatedCardsGrid(
             works = listOf(
-                WorkUIModel("Trabajo 1", "Cliente 1", "Descripción 1", "Dirección 1"),
-                WorkUIModel("Trabajo 2", "Cliente 2", "Descripción 2", "Dirección 2"),
-                WorkUIModel("Trabajo 3", "Cliente 3", "Descripción 3", "Dirección 3"),
-                WorkUIModel("Trabajo 4", "Cliente 4", "Descripción 4", "Dirección 4"),
-                WorkUIModel("Trabajo 5", "Cliente 5", "Descripción 5", "Dirección 5"),
-                WorkUIModel("Trabajo 6", "Cliente 6", "Descripción 6", "Dirección 6")
+                WorkUIModel("Trabajo 1", "Cliente 1", "Descripción 1", "Dirección 1", "admin"),
+                WorkUIModel("Trabajo 2", "Cliente 2", "Descripción 2", "Dirección 2", ""),
+                WorkUIModel("Trabajo 3", "Cliente 3", "Descripción 3", "Dirección 3", ""),
+                WorkUIModel("Trabajo 4", "Cliente 4", "Descripción 4", "Dirección 4", ""),
+                WorkUIModel("Trabajo 5", "Cliente 5", "Descripción 5", "Dirección 5", ""),
+                WorkUIModel("Trabajo 6", "Cliente 6", "Descripción 6", "Dirección 6", "")
             )
         )
     }
