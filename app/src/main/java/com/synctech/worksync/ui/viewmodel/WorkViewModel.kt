@@ -28,6 +28,7 @@ class WorkViewModel(
     val uiState: StateFlow<WorkState> = _uiState
 
     init {
+        Log.d("WorkViewModel", "ViewModel inicializado.")
         fetchWorks()
     }
 
@@ -35,10 +36,12 @@ class WorkViewModel(
      * Obtiene los trabajos y actualiza el estado de la UI.
      */
     private fun fetchWorks() = viewModelScope.launch {
+        Log.d("WorkViewModel", "Iniciando la carga de trabajos...")
         _uiState.update { it.copy(showLoadingIndicator = true) }
 
         try {
             val workDomain = withContext(Dispatchers.IO) {
+                Log.d("WorkViewModel", "Llamando a getWorkUseCase para obtener trabajos...")
                 getWorkUseCase(currentUser)
             }
 
@@ -50,11 +53,14 @@ class WorkViewModel(
             } else {
                 workUIModel.filter { it.assignedTo == currentUser.userId } // Usuario normal ve solo los asignados
             }
+
             // Log para verificar los trabajos obtenidos
             Log.d("WorkViewModel", "Trabajos obtenidos: ${workUIModel.size}")
-            workUIModel.forEach { Log.d("WorkViewModel", "Trabajo: $it") }
+            workUIModel.take(10).forEachIndexed { index, work ->
+                Log.d("WorkViewModel", "Trabajo #${index + 1}: $work")
+            }
 
-
+            // Actualizar el estado con los trabajos obtenidos y filtrados
             _uiState.update {
                 it.copy(
                     works = workUIModel,
