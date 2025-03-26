@@ -1,4 +1,4 @@
-package com.synctech.worksync.domain.domainModels
+package com.synctech.worksync.domain.models
 
 
 data class WorkSessionDomainModel(

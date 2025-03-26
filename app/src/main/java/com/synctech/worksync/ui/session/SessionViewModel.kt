@@ -3,10 +3,10 @@ package com.synctech.worksync.ui.session
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.synctech.worksync.domain.domainModels.WorkerDomainModel
+import com.synctech.worksync.domain.models.WorkerDomainModel
 import com.synctech.worksync.domain.useCases.SaveWorkSessionUseCase
-import com.synctech.worksync.ui.uiModels.WorkerUiModel
-import com.synctech.worksync.ui.uiModels.toUi
+import com.synctech.worksync.ui.models.WorkerUiModel
+import com.synctech.worksync.ui.models.toUi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -89,7 +89,6 @@ class SessionViewModel(
         val end = System.currentTimeMillis()
         val start = _state.value.sessionStart
         val user = _state.value.domainWorker
-
         if (user != null && start != null) {
             viewModelScope.launch {
                 try {

@@ -1,6 +1,6 @@
 package com.synctech.worksync.domain.repositories
 
-import com.synctech.worksync.domain.domainModels.WorkSessionDomainModel
+import com.synctech.worksync.domain.models.WorkSessionDomainModel
 
 interface WorkSessionRepository {
    suspend fun saveWorkSession(session: WorkSessionDomainModel)

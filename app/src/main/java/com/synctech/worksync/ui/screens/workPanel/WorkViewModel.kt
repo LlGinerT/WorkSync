@@ -1,4 +1,4 @@
-package com.synctech.worksync.ui.viewmodel
+package com.synctech.worksync.ui.screens.workPanel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -43,6 +43,7 @@ class WorkViewModel(
             val workDomain = withContext(Dispatchers.IO) {
                 Log.d("WorkViewModel", "Llamando a getWorkUseCase para obtener trabajos...")
                 getWorkUseCase(currentUser)
+
             }
 
             val workUIModel = workDomain.map { it.toUI() }

@@ -1,5 +1,6 @@
 package com.synctech.worksync.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -23,15 +24,16 @@ import com.synctech.worksync.ui.theme.WorkSyncTheme
  *             incluyendo el nombre del trabajo, cliente, descripción y dirección.
  */
 @Composable
-fun ElevatedCard(work: WorkUIModel) {
+fun WorkCard(work: WorkUIModel, onClick: () -> Unit) {
     ElevatedCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         colors = CardDefaults.elevatedCardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
         modifier = Modifier
-            .padding(8.dp)  // Padding para mejor separación entre tarjetas
-            .fillMaxWidth()  // Se ajusta al ancho disponible
+            .size(220.dp,180.dp)
+            .clickable { onClick() }
+
     ) {
         Column(
             modifier = Modifier
@@ -94,7 +96,7 @@ fun ElevatedCardsGrid(
         verticalArrangement = Arrangement.spacedBy(16.dp)    // Ajustamos el espacio entre las filas
     ) {
         items(works) { work ->
-            ElevatedCard(work = work) // Pasa cada trabajo individual a la tarjeta
+            WorkCard(work = work) {} // Pasa cada trabajo individual a la tarjeta
         }
     }
 }

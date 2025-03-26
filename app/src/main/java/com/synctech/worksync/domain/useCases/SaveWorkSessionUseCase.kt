@@ -1,8 +1,9 @@
 package com.synctech.worksync.domain.useCases
 
 import android.util.Log
-import com.synctech.worksync.domain.domainModels.WorkSessionDomainModel
+import com.synctech.worksync.domain.models.WorkSessionDomainModel
 import com.synctech.worksync.domain.repositories.WorkSessionRepository
+import java.util.UUID
 
 /**
  * Caso de uso para guardar una sesión de trabajo completa en el repositorio.
@@ -29,7 +30,7 @@ class SaveWorkSessionUseCase(private val repository: WorkSessionRepository) {
     suspend operator fun invoke(userID: String, sessionStart: Long, sessionEnd: Long) {
         val sessionDurationInSeconds = (sessionEnd - sessionStart) / 1000
         val session = WorkSessionDomainModel(
-            sessionId = java.util.UUID.randomUUID().toString(),
+            sessionId = UUID.randomUUID().toString(),
             userId = userID,
             startTime = sessionStart,
             endTime = sessionEnd,

@@ -1,6 +1,6 @@
 package com.synctech.worksync.data.testData
 
-import com.synctech.worksync.domain.domainModels.WorkSessionDomainModel
+import com.synctech.worksync.domain.models.WorkSessionDomainModel
 import com.synctech.worksync.domain.repositories.WorkSessionRepository
 
 class MockWorkSessionRepository : WorkSessionRepository {

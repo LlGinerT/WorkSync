@@ -1,7 +1,7 @@
 package com.synctech.worksync.domain.useCases
 
 import com.synctech.worksync.domain.models.User
-import com.synctech.worksync.domain.repository.WorkRepository
+import com.synctech.worksync.domain.repositories.WorkRepository
 import com.synctech.worksync.domain.models.Work
 
 /**
@@ -17,7 +17,6 @@ class GetWorkUseCase(
      * Obtiene una lista de trabajos desde el repositorio.
      ** @param user El usuario que solicita los trabajos.
      ** @return Una lista de objetos [Work], representando los trabajos obtenidos.
-    +
      */
     operator fun invoke(user: User): List<Work> {
         return workRepository.getWork(user)

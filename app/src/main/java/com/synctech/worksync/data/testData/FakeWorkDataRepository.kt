@@ -1,6 +1,8 @@
+package com.synctech.worksync.data.testData
+
 import com.synctech.worksync.domain.models.User
 import com.synctech.worksync.domain.models.Work
-import com.synctech.worksync.domain.repository.WorkRepository
+import com.synctech.worksync.domain.repositories.WorkRepository
 
 class FakeWorkDataRepository : WorkRepository {
 
@@ -11,7 +13,7 @@ class FakeWorkDataRepository : WorkRepository {
             clientName = "Andrés Sanz",
             description = "",
             address = "La Latina",
-            assignedTo = null
+            assignedTo = "78"
         ),
         Work(
             jobName = "Instalación Router",

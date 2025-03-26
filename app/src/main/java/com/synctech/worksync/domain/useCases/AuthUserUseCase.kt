@@ -1,6 +1,6 @@
 package com.synctech.worksync.domain.useCases
 
-import com.synctech.worksync.domain.domainModels.WorkerDomainModel
+import com.synctech.worksync.domain.models.WorkerDomainModel
 import com.synctech.worksync.domain.repositories.UserAuthRepository
 import com.synctech.worksync.domain.repositories.WorkersRepository
 

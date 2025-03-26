@@ -1,6 +1,6 @@
 package com.synctech.worksync.domain.repositories
 
-import com.synctech.worksync.domain.domainModels.WorkerDomainModel
+import com.synctech.worksync.domain.models.WorkerDomainModel
 
 /**
  * Interfaz para acceder a los datos de los trabajadores.

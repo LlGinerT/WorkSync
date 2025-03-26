@@ -20,8 +20,10 @@ data class Works(
  * @param clientName El nombre del cliente para quien se realiza el trabajo.
  * @param description Una descripción del trabajo que se va a realizar.
  * @param address La dirección donde se lleva a cabo el trabajo.
+ * @param assignedTo Id del trabajador
  */
 data class Work(
+    // Te falta añadir un WorkID
     val jobName: String,
     val clientName: String,
     val description: String,

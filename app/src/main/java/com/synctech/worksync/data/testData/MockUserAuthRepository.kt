@@ -1,6 +1,6 @@
 package com.synctech.worksync.data.testData
 
-import com.synctech.worksync.domain.domainModels.UserDomainModel
+import com.synctech.worksync.domain.models.UserDomainModel
 import com.synctech.worksync.domain.repositories.UserAuthRepository
 
 /**

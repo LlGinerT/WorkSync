@@ -1,23 +1,18 @@
-package com.synctech.worksync.ui.screen
+package com.synctech.worksync.ui.screens.workPanel
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.synctech.worksync.ui.components.ElevatedCardsGrid
-import com.synctech.worksync.ui.models.WorkUIModel
-import com.synctech.worksync.ui.theme.WorkSyncTheme
-import com.synctech.worksync.ui.viewmodel.WorkState
-import com.synctech.worksync.ui.viewmodel.WorkViewModel
-import com.synctech.worksync.ui.models.toUI
 
 /**
  * Pantalla principal que muestra los trabajos.
@@ -31,7 +26,7 @@ fun WorkScreen(
     modifier: Modifier = Modifier
 ) {
     // Recoge el estado del ViewModel y se asegura de que se actualice con el ciclo de vida
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsState()
     // Verifica si el usuario es administrador
     val isAdmin = uiState.user?.isAdmin ?: false
     WorkContent(uiState, isAdmin, modifier)
@@ -50,7 +45,9 @@ fun WorkContent(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         if (uiState.showLoadingIndicator) {
@@ -62,7 +59,7 @@ fun WorkContent(
             )
         }
 
-        // Mostrar un ícono de agregar si el usuario es administrador
+        // Mostrar un ícono de agregar si el usuario es administrador, esto ira en el scaffold.
         if (isAdmin) {
             FloatingActionButton(
                 onClick = { /* Acción para agregar trabajo */ },

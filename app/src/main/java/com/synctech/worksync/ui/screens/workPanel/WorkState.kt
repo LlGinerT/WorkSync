@@ -1,4 +1,4 @@
-package com.synctech.worksync.ui.viewmodel
+package com.synctech.worksync.ui.screens.workPanel
 
 import com.synctech.worksync.domain.models.User
 import com.synctech.worksync.ui.models.WorkUIModel

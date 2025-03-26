@@ -1,6 +1,6 @@
-package com.synctech.worksync.ui.uiModels
+package com.synctech.worksync.ui.models
 
-import com.synctech.worksync.domain.domainModels.WorkerDomainModel
+import com.synctech.worksync.domain.models.WorkerDomainModel
 
 data class WorkerUiModel(
     val name: String,

@@ -1,4 +1,4 @@
-package com.synctech.worksync.domain.repository
+package com.synctech.worksync.domain.repositories
 
 import com.synctech.worksync.domain.models.User
 import com.synctech.worksync.domain.models.Work
