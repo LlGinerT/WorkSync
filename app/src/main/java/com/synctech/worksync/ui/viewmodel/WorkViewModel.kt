@@ -1,5 +1,6 @@
 package com.synctech.worksync.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synctech.worksync.domain.models.User
@@ -49,6 +50,10 @@ class WorkViewModel(
             } else {
                 workUIModel.filter { it.assignedTo == currentUser.userId } // Usuario normal ve solo los asignados
             }
+            // Log para verificar los trabajos obtenidos
+            Log.d("WorkViewModel", "Trabajos obtenidos: ${workUIModel.size}")
+            workUIModel.forEach { Log.d("WorkViewModel", "Trabajo: $it") }
+
 
             _uiState.update {
                 it.copy(
@@ -58,6 +63,7 @@ class WorkViewModel(
                 )
             }
         } catch (e: Exception) {
+            Log.e("WorkViewModel", "Error obteniendo trabajos", e)
             _uiState.update { it.copy(showLoadingIndicator = false) }
         }
     }
