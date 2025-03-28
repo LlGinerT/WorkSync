@@ -18,28 +18,28 @@ class FakeWorkDataRepository : WorkRepository {
         Work(
             jobName = "Instalación Router",
             clientName = "Juan Pérez",
-            description = "Instalación de Router en el Salón",
+            description = "Instalación de Router",
             address = "Gran Vía",
             assignedTo = null
         ),
         Work(
             jobName = "Configuración de Red Wifi",
             clientName = "Elisa Main",
-            description = "Asignación de un nombre único para la red (SSID)",
+            description = "",
             address = "Sol",
             assignedTo = null
         ),
         Work(
             jobName = "Optimización de la Señal Red Wifi",
             clientName = "Daniel Rodriquez",
-            description = "Mejorar la cobertura y el rendimiento de una red Wi-Fi. Mover el router a una ubicación más central",
+            description = "Mejorar calidad WIFI",
             address = "Chamberí",
             assignedTo = null
         ),
         Work(
             jobName = "Configuración de Red Local",
             clientName = "Sara Ban",
-            description = "Configuración red local que conecta varios dispositivos mediante cables Ethernet",
+            description = "Configuración red local.",
             address = "Malasaña",
             assignedTo = null
         )
