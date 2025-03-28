@@ -36,9 +36,9 @@ class WorkViewModel(
      * Obtiene los trabajos y actualiza el estado de la UI.
      */
     private fun fetchWorks() = viewModelScope.launch {
-        Log.d("WorkViewModel", "Iniciando la carga de trabajos...")
-        _uiState.update { it.copy(showLoadingIndicator = true) }
 
+        _uiState.update { it.copy(showLoadingIndicator = true) }
+        Log.d("WorkViewModel", "Iniciando la carga de trabajos...")
         try {
             val workDomain = withContext(Dispatchers.IO) {
                 Log.d("WorkViewModel", "Llamando a getWorkUseCase para obtener trabajos...")
