@@ -2,13 +2,34 @@ package com.synctech.worksync.domain.repositories
 
 import com.synctech.worksync.domain.models.Material
 import com.synctech.worksync.domain.models.User
-import com.synctech.worksync.domain.models.Work
 
+/**
+ * Repositorio que define las operaciones relacionadas con los materiales.
+ */
 interface MaterialRepository {
 
-    fun getMaterials() :List<Material>
+    /**
+     * Obtiene la lista de materiales disponibles.
+     *
+     * @return Lista de materiales.
+     */
+    fun getMaterials(): List<Material>
 
-    fun addMaterials(user: User, material: Material):Boolean
+    /**
+     * Agrega un material al sistema.
+     *
+     * @param user Usuario que realiza la acción.
+     * @param material Material a agregar.
+     * @return `true` si el material se agregó correctamente, `false` en caso contrario.
+     */
+    fun addMaterials(user: User, material: Material): Boolean
 
+    /**
+     * Elimina un material del sistema.
+     *
+     * @param user Usuario que realiza la acción.
+     * @param material Material a eliminar.
+     * @return `true` si el material se eliminó correctamente, `false` en caso contrario.
+     */
     fun removeMaterials(user: User, material: Material): Boolean
 }
