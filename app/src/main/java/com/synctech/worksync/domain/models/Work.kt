@@ -24,6 +24,7 @@ data class Works(
  */
 data class Work(
     // Te falta añadir un WorkID
+    val workId: String,
     val jobName: String,
     val clientName: String,
     val description: String,
