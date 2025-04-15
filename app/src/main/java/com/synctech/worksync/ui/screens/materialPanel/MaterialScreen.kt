@@ -167,3 +167,31 @@ fun MaterialScreenPreview() {
         )
     }
 }
+
+//Codigo usando Text y for each para simplificar codigo.
+//@Composable
+//fun SimpleMaterialList(materials: List<MaterialUiModel>) {
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(16.dp),
+//        verticalArrangement = Arrangement.spacedBy(8.dp)
+//    ) {
+//        // Cabecera
+//        Text(
+//            text = "ID | Nombre | Precio | Cantidad",
+//            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+//        )
+//
+//        // Lista simple
+//        materials.forEach { material ->
+//            Text(
+//                text = "${material.materialId} | ${material.name} | $${material.precio} | ${material.cantidad}",
+//                style = MaterialTheme.typography.bodyMedium
+//            )
+//        }
+//    }
+//}
+
+//SimpleMaterialList(materials = uiState.materials)
+
