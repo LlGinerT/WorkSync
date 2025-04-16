@@ -2,8 +2,11 @@ package com.synctech.worksync.ui.screens.materialPanel
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.*
@@ -13,7 +16,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.synctech.worksync.ui.models.MaterialUiModel
+import com.synctech.worksync.ui.screens.workPanel.WorkState
+import com.synctech.worksync.ui.screens.workPanel.WorkViewModel
 import com.synctech.worksync.ui.theme.WorkSyncTheme
 
 /**
@@ -25,13 +31,33 @@ import com.synctech.worksync.ui.theme.WorkSyncTheme
 @Composable
 fun MaterialScreen(
     viewModel: MaterialViewModel,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     val backgroundColor = MaterialTheme.colorScheme.primaryContainer
     val uiState by viewModel.uiState.collectAsState()
 
-    MaterialContent(uiState, modifier, backgroundColor)
+    // Aquí pasamos el estado a la función MaterialContent
+    Box(
+        modifier = modifier.fillMaxSize().background(backgroundColor)
+    ) {
+        MaterialContent(
+            uiState = uiState,
+            modifier = modifier,
+            backgroundColor = backgroundColor ) // Asegúrate de pasar uiState correctamente
+
+        // Botón para regresar a WorkScreen
+        IconButton(
+            onClick = { navController.navigateUp() }, // Regresa a la pantalla anterior
+            modifier = Modifier
+                .align(Alignment.TopStart) // Alineamos el ícono en la esquina superior izquierda
+                .padding(16.dp)
+        ) {
+            Icon(Icons.Default.ArrowBack, contentDescription = "Regresar")
+        }
+    }
 }
+
 
 /**
  * Contenido de la pantalla de materiales.
@@ -80,7 +106,7 @@ fun MaterialList(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(colorScheme.primary.copy(alpha = 0.1f)) //factor de peso,como debe distribuirse el espacio
+                    .background(colorScheme.primary.copy(alpha = 0.1f))
                     .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -146,9 +172,6 @@ fun MaterialList(
     }
 }
 
-/**
- * Vista previa de la pantalla de materiales.
- */
 @Preview(showBackground = true)
 @Composable
 fun MaterialScreenPreview() {

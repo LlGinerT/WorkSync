@@ -9,6 +9,7 @@ class FakeWorkDataRepository : WorkRepository {
     // Lista simulada de trabajos
     private val mockWorkData = mutableListOf(
         Work(
+            workId = "1",
             jobName = "Instalación Cable Fibra Optica",
             clientName = "Andrés Sanz",
             description = "",
@@ -16,6 +17,7 @@ class FakeWorkDataRepository : WorkRepository {
             assignedTo = "78"
         ),
         Work(
+            workId =  "2",
             jobName = "Instalación Router",
             clientName = "Juan Pérez",
             description = "Instalación de Router",
@@ -23,6 +25,7 @@ class FakeWorkDataRepository : WorkRepository {
             assignedTo = null
         ),
         Work(
+            workId = "3",
             jobName = "Configuración de Red Wifi",
             clientName = "Elisa Main",
             description = "",
@@ -30,6 +33,7 @@ class FakeWorkDataRepository : WorkRepository {
             assignedTo = null
         ),
         Work(
+            workId = "4",
             jobName = "Optimización de la Señal Red Wifi",
             clientName = "Daniel Rodriquez",
             description = "Mejorar calidad WIFI",
@@ -37,6 +41,7 @@ class FakeWorkDataRepository : WorkRepository {
             assignedTo = null
         ),
         Work(
+            workId = "5",
             jobName = "Configuración de Red Local",
             clientName = "Sara Ban",
             description = "Configuración red local.",
