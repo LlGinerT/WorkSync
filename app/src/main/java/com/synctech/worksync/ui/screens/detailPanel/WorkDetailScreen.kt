@@ -22,10 +22,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.synctech.worksync.R
-import com.synctech.worksync.ui.models.WorkUIModel
+import com.synctech.worksync.ui.models.DetailUIModel
 
 @Composable
-fun WorkDetailScreen(work: WorkUIModel) {
+fun WorkDetailScreen(work: DetailUIModel) {
     val context = LocalContext.current
 
     Column(
@@ -99,7 +99,7 @@ fun DetailRow(title: String, value: String) {
 @Preview(showBackground = true)
 @Composable
 fun WorkDetailScreenPreview() {
-    val work = WorkUIModel(
+    val work = DetailUIModel(
         jobName = "Instalación de Cableado",
         clientName = "Juan Pérez",
         description = "Instalación de cableado de fibra óptica en el edificio.",

@@ -1,7 +1,6 @@
 package com.synctech.worksync.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHost
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,12 +17,10 @@ fun NavGraph(navController: NavHostController, viewModel: WorkViewModel) {
         navController = navController,
         startDestination = "workList"
     ) {
-        // Ruta a la pantalla principal
         composable("workList") {
             WorkScreen(viewModel = viewModel, navController = navController)
         }
 
-        // Pantalla de detalle
         composable(
             route = "workDetail/{jobName}/{clientName}/{description}/{address}/{assignedTo}",
             arguments = listOf(
@@ -31,18 +28,24 @@ fun NavGraph(navController: NavHostController, viewModel: WorkViewModel) {
                 navArgument("clientName") { type = NavType.StringType },
                 navArgument("description") { type = NavType.StringType },
                 navArgument("address") { type = NavType.StringType },
-                navArgument("assignedTo") { type = NavType.StringType }
+                navArgument("assignedTo") { type = NavType.StringType; nullable = true }
             )
         ) { backStackEntry ->
             val jobName = backStackEntry.arguments?.getString("jobName") ?: ""
             val clientName = backStackEntry.arguments?.getString("clientName") ?: ""
             val description = backStackEntry.arguments?.getString("description") ?: ""
             val address = backStackEntry.arguments?.getString("address") ?: ""
-            val assignedTo = backStackEntry.arguments?.getString("assignedTo") ?: ""
+            val assignedTo = backStackEntry.arguments?.getString("assignedTo")
 
-            WorkDetailScreen(
-                work = WorkUIModel(jobName, clientName, description, address, assignedTo)
-            )
+            /*WorkDetailScreen(
+                work = WorkUIModel(
+                    jobName = jobName,
+                    clientName = clientName,
+                    description = description,
+                    address = address,
+                    assignedTo = assignedTo
+                )
+            )*/
         }
     }
 }
