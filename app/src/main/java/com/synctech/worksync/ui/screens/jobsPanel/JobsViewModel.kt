@@ -48,23 +48,26 @@ class JobsViewModel(
                 )
             }
 
-            try {
-                val jobs = withContext(Dispatchers.IO) {
-                    getJobsUseCase(user)
-                }.map { it.toUI() }
-
+            val result = withContext(Dispatchers.IO) {
+                getJobsUseCase(user)
+            }
+            // he cambiado tu try catch por result en el UseCase
+            // misma mecanica, mejor gestion de varios errores que pueden dar
+            // los repositorios cuando metamos FireBase.
+            result.onSuccess { jobs ->
                 _uiState.update {
                     it.copy(
-                        jobsList = jobs, showLoadingIndicator = false, errorMessage = null
+                        jobsList = jobs.map { job -> job.toUI() },
+                        showLoadingIndicator = false,
+                        errorMessage = null
                     )
                 }
-
-            } catch (e: Exception) {
-                Log.e("JobsViewModel", "Error obteniendo trabajos", e)
+            }.onFailure { error ->
+                Log.e("JobsViewModel", "Error obteniendo trabajos", error)
                 _uiState.update {
                     it.copy(
                         showLoadingIndicator = false,
-                        errorMessage = "Ha ocurrido un error al cargar los trabajos."
+                        errorMessage = error.message ?: "Error desconocido"
                     )
                 }
             }

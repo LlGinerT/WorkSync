@@ -1,5 +1,6 @@
 package com.synctech.worksync.data.testData
 
+import com.synctech.worksync.domain.models.EmployeeDomainModel
 import com.synctech.worksync.domain.models.JobDomainModel
 import com.synctech.worksync.domain.repositories.JobsRepository
 
@@ -16,7 +17,7 @@ class MockJobsDataRepository : JobsRepository {
             assignedTo = "3"
         ),
         JobDomainModel(
-            workId =  "2",
+            workId = "2",
             jobName = "Instalación Router",
             clientName = "Juan Pérez",
             description = "Instalación de Router",
@@ -49,11 +50,13 @@ class MockJobsDataRepository : JobsRepository {
         )
     )
 
-    /**
-     * Devuelve la lista de trabajos según el usuario.
-     */
-    override fun getJobs(): List<JobDomainModel> {
-        return mockJobDomainModelData
+    override fun getJobs(user: EmployeeDomainModel): List<JobDomainModel> {
+        val jobs = mockJobDomainModelData
+        return if (user.isAdmin) {
+            jobs
+        } else {
+            jobs.filter { it.assignedTo == user.userId }
+        }
     }
 
     override fun addJob(jobDomainModel: JobDomainModel): Boolean {

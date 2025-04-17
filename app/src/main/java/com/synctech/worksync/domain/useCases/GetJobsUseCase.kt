@@ -17,12 +17,12 @@ class GetJobsUseCase(
      ** @param user [EmployeeDomainModel], que solicita los trabajos.
      ** @return Una lista de objetos [JobDomainModel], representando los trabajos obtenidos.
      */
-    operator fun invoke(user: EmployeeDomainModel): List<JobDomainModel> {
-        val jobs = jobsRepository.getJobs()
-        return if (user.isAdmin) {
-            jobs
-        } else {
-            jobs.filter { it.assignedTo == user.userId }
+    operator fun invoke(user: EmployeeDomainModel): Result<List<JobDomainModel>> {
+        return try {
+            val jobList = jobsRepository.getJobs(user)
+            Result.success(jobList)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }
