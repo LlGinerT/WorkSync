@@ -1,11 +1,10 @@
-package com.synctech.worksync.ui.screens.materialPanel
+package com.synctech.worksync.ui.screens.InventoryPanel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.synctech.worksync.domain.useCases.GetMaterialUseCase
+import com.synctech.worksync.domain.useCases.GetInventoryUseCase
 import com.synctech.worksync.ui.models.toUi
-import com.synctech.worksync.ui.screens.materialPanel.MaterialState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,18 +16,18 @@ import kotlinx.coroutines.withContext
 /**
  * ViewModel para gestionar el estado y la lógica de negocio de la pantalla de materiales.
  *
- * @param getMaterialUseCase Caso de uso para obtener la lista de materiales desde el dominio.
+ * @param getInventoryUseCase Caso de uso para obtener la lista de materiales desde el dominio.
  */
-class MaterialViewModel(
-    private val getMaterialUseCase: GetMaterialUseCase,
+class InventoryViewModel(
+    private val getInventoryUseCase: GetInventoryUseCase,
 ) : ViewModel() {
 
     /** Estado de la interfaz de usuario representado mediante StateFlow. */
-    private val _uiState = MutableStateFlow(MaterialState())
-    val uiState: StateFlow<MaterialState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(InventoryState())
+    val uiState: StateFlow<InventoryState> = _uiState.asStateFlow()
 
     init {
-        Log.d("MaterialViewModel", "ViewModel inicializado.")
+        Log.d("InventoryViewModel", "ViewModel inicializado.")
         fetchMaterials()
     }
 
@@ -38,11 +37,14 @@ class MaterialViewModel(
      */
     private fun fetchMaterials() = viewModelScope.launch {
         _uiState.update { it.copy(showLoadingIndicator = true) }
-        Log.d("WorkViewModel", "Iniciando la carga de materiales...")
+        Log.d("JobsViewModel", "Iniciando la carga de materiales...")
         try {
             val materialDomain = withContext(Dispatchers.IO) {
-                Log.d("MaterialViewModel", "Llamando a getMaterialUseCase para obtener materiales...")
-                getMaterialUseCase()
+                Log.d(
+                    "InventoryViewModel",
+                    "Llamando a getInventoryUseCase para obtener materiales..."
+                )
+                getInventoryUseCase()
             }
             _uiState.update {
                 it.copy(
@@ -50,9 +52,9 @@ class MaterialViewModel(
                     materials = materialDomain.map { it.toUi() }
                 )
             }
-            Log.d("MaterialViewModel", "Materiales cargados exitosamente.")
+            Log.d("InventoryViewModel", "Materiales cargados exitosamente.")
         } catch (e: Exception) {
-            Log.e("MaterialViewModel", "Error al cargar materiales", e)
+            Log.e("InventoryViewModel", "Error al cargar materiales", e)
             _uiState.update { it.copy(showLoadingIndicator = false) }
         }
     }

@@ -1,15 +1,28 @@
-package com.synctech.worksync.ui.screens.materialPanel
+package com.synctech.worksync.ui.screens.InventoryPanel
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.runtime.*
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,8 +31,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.synctech.worksync.ui.models.MaterialUiModel
-import com.synctech.worksync.ui.screens.workPanel.WorkState
-import com.synctech.worksync.ui.screens.workPanel.WorkViewModel
 import com.synctech.worksync.ui.theme.WorkSyncTheme
 
 /**
@@ -30,7 +41,7 @@ import com.synctech.worksync.ui.theme.WorkSyncTheme
  */
 @Composable
 fun MaterialScreen(
-    viewModel: MaterialViewModel,
+    viewModel: InventoryViewModel,
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
@@ -39,7 +50,9 @@ fun MaterialScreen(
 
     // Aquí pasamos el estado a la función MaterialContent
     Box(
-        modifier = modifier.fillMaxSize().background(backgroundColor)
+        modifier = modifier
+            .fillMaxSize()
+            .background(backgroundColor)
     ) {
         MaterialContent(
             uiState = uiState,
@@ -68,7 +81,7 @@ fun MaterialScreen(
  */
 @Composable
 fun MaterialContent(
-    uiState: MaterialState,
+    uiState: InventoryState,
     modifier: Modifier = Modifier,
     backgroundColor: Color
 ) {
@@ -148,7 +161,7 @@ fun MaterialList(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = material.materialId.toString(),
+                        text = material.itemId.toString(),
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Text(
@@ -177,7 +190,7 @@ fun MaterialList(
 fun MaterialScreenPreview() {
     WorkSyncTheme {
         MaterialContent(
-            uiState = MaterialState(
+            uiState = InventoryState(
                 showLoadingIndicator = false, materials = listOf(
                     MaterialUiModel(1, "Cable de red", 10.0, 200),
                     MaterialUiModel(2, "Router WiFi", 50.0, 25),

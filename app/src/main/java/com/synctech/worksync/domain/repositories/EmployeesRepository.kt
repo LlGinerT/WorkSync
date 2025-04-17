@@ -1,23 +1,23 @@
 package com.synctech.worksync.domain.repositories
 
-import com.synctech.worksync.domain.models.WorkerDomainModel
+import com.synctech.worksync.domain.models.EmployeeDomainModel
 
 /**
  * Interfaz para acceder a los datos de los trabajadores.
  */
-interface WorkersRepository {
+interface EmployeesRepository {
     /**
      * Obtiene el trabajador por su ID.
      *
      * @param userId ID del trabajador.
      * @return El modelo del trabajador correspondiente.
      */
-    fun getWorker(userId: String): WorkerDomainModel?
+    fun getWorker(userId: String): EmployeeDomainModel?
 
     /**
      * Devuelve la lista de todos los trabajadores.
      *
      * @return Lista de trabajadores.
      */
-    fun getWorkersList(): List<WorkerDomainModel> // Para que el admin pueda asignar los trabajos.
+    fun getWorkersList(): List<EmployeeDomainModel> // Para que el admin pueda asignar los trabajos.
 }

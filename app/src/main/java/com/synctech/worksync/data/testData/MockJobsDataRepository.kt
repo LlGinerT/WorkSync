@@ -1,0 +1,70 @@
+package com.synctech.worksync.data.testData
+
+import com.synctech.worksync.domain.models.JobDomainModel
+import com.synctech.worksync.domain.repositories.JobsRepository
+
+class MockJobsDataRepository : JobsRepository {
+
+    // Lista simulada de trabajos
+    private val mockJobDomainModelData = mutableListOf(
+        JobDomainModel(
+            workId = "1",
+            jobName = "Instalación Cable Fibra Optica",
+            clientName = "Andrés Sanz",
+            description = "",
+            address = "La Latina",
+            assignedTo = "3"
+        ),
+        JobDomainModel(
+            workId =  "2",
+            jobName = "Instalación Router",
+            clientName = "Juan Pérez",
+            description = "Instalación de Router",
+            address = "Gran Vía",
+            assignedTo = "3"
+        ),
+        JobDomainModel(
+            workId = "3",
+            jobName = "Configuración de Red Wifi",
+            clientName = "Elisa Main",
+            description = "",
+            address = "Sol",
+            assignedTo = "2"
+        ),
+        JobDomainModel(
+            workId = "4",
+            jobName = "Optimización de la Señal Red Wifi",
+            clientName = "Daniel Rodriquez",
+            description = "Mejorar calidad WIFI",
+            address = "Chamberí",
+            assignedTo = "3"
+        ),
+        JobDomainModel(
+            workId = "5",
+            jobName = "Configuración de Red Local",
+            clientName = "Sara Ban",
+            description = "Configuración red local.",
+            address = "Malasaña",
+            assignedTo = null
+        )
+    )
+
+    /**
+     * Devuelve la lista de trabajos según el usuario.
+     */
+    override fun getJobs(): List<JobDomainModel> {
+        return mockJobDomainModelData
+    }
+
+    override fun addJob(jobDomainModel: JobDomainModel): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateJob(jobDomainModel: JobDomainModel): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun removeJob(jobDomainModel: JobDomainModel): Boolean {
+        TODO("Not yet implemented")
+    }
+}

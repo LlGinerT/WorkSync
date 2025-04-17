@@ -7,7 +7,7 @@ package com.synctech.worksync.domain.models
  * @property name Nombre del trabajador.
  * @property isAdmin Indica si el usuario tiene permisos de administrador.
  */
-data class WorkerDomainModel(
+data class EmployeeDomainModel(
     val userId: String,
     val name: String,
     val isAdmin: Boolean,

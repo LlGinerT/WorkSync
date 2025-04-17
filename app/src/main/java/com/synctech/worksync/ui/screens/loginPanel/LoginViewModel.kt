@@ -1,4 +1,4 @@
-package com.synctech.worksync.ui.screens.login
+package com.synctech.worksync.ui.screens.loginPanel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

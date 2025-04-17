@@ -3,7 +3,7 @@ package com.synctech.worksync.ui.session
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.synctech.worksync.domain.models.WorkerDomainModel
+import com.synctech.worksync.domain.models.EmployeeDomainModel
 import com.synctech.worksync.domain.useCases.SaveWorkSessionUseCase
 import com.synctech.worksync.ui.models.WorkerUiModel
 import com.synctech.worksync.ui.models.toUi
@@ -35,7 +35,8 @@ class SessionViewModel(
     private val _state = MutableStateFlow(SessionState())
     val state: StateFlow<SessionState> = _state.asStateFlow()
 
-    val uiWorker: WorkerUiModel? get() = _state.value.domainWorker?.toUi()
+    val currentUser: EmployeeDomainModel? get() = _state.value.employee
+    val uiWorker: WorkerUiModel? get() = _state.value.employee?.toUi()
 
     // Job que representa la corutina activa del cronómetro
     private var timerJob: Job? = null
@@ -67,11 +68,11 @@ class SessionViewModel(
      * Establece el trabajador autenticado en sesión, almacena el tiempo de inicio
      * y comienza el cronómetro.
      *
-     * @param workerDomainModel Modelo del trabajador.
+     * @param employeeDomainModel Modelo del trabajador.
      */
-    fun setWorker(workerDomainModel: WorkerDomainModel) {
+    fun setWorker(employeeDomainModel: EmployeeDomainModel) {
         _state.value = _state.value.copy(
-            domainWorker = workerDomainModel,
+            employee = employeeDomainModel,
             sessionStart = System.currentTimeMillis(),
             secondsWorked = 0
         )
@@ -88,7 +89,7 @@ class SessionViewModel(
     fun logout() {
         val end = System.currentTimeMillis()
         val start = _state.value.sessionStart
-        val user = _state.value.domainWorker
+        val user = _state.value.employee
         if (user != null && start != null) {
             viewModelScope.launch {
                 try {

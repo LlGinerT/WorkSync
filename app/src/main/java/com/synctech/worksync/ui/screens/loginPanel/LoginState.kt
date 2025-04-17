@@ -1,4 +1,4 @@
-package com.synctech.worksync.ui.screens.login
+package com.synctech.worksync.ui.screens.loginPanel
 
 /**
  * Estado de la pantalla de inicio de sesión (`LoginScreen`), gestionado por el `LoginViewModel`.

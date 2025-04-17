@@ -1,4 +1,4 @@
-package com.synctech.worksync.ui.screens.login
+package com.synctech.worksync.ui.screens.loginPanel
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -25,9 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.synctech.worksync.data.testData.MockEmployeesRepository
 import com.synctech.worksync.data.testData.MockUserAuthRepository
 import com.synctech.worksync.data.testData.MockWorkSessionRepository
-import com.synctech.worksync.data.testData.MockWorkersRepository
 import com.synctech.worksync.domain.useCases.AuthUserUseCase
 import com.synctech.worksync.domain.useCases.SaveWorkSessionUseCase
 import com.synctech.worksync.ui.components.AuthInputField
@@ -79,9 +79,9 @@ fun LoginScreen(
             Log.i("LoginScreen", "loginSucces = true")
             Log.d(
                 "LoginScreenDebug",
-                "userID: ${debugUserLogin.domainWorker?.userId}, " +
-                        "name: ${debugUserLogin.domainWorker?.name}, " +
-                        "isAdmin: ${debugUserLogin.domainWorker?.isAdmin}"
+                "userID: ${debugUserLogin.employee?.userId}, " +
+                        "name: ${debugUserLogin.employee?.name}, " +
+                        "isAdmin: ${debugUserLogin.employee?.isAdmin}"
             )
         }
     }
@@ -158,7 +158,7 @@ fun BackgroundPreview() {
 fun LoginScreenPreview() {
     WorkSyncTheme {
         val mockAuthRepo = MockUserAuthRepository()
-        val mockWorkersRepo = MockWorkersRepository()
+        val mockWorkersRepo = MockEmployeesRepository()
         val mockWorkSessionRepository = MockWorkSessionRepository()
         val authUserUseCase = AuthUserUseCase(mockAuthRepo, mockWorkersRepo)
         val saveWorkSessionUseCase = SaveWorkSessionUseCase(mockWorkSessionRepository)
