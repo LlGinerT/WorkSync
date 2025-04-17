@@ -35,7 +35,7 @@ import com.synctech.worksync.ui.session.SessionViewModel
 import com.synctech.worksync.ui.theme.WorkSyncTheme
 
 @Composable
-fun LoginBackground(content: @Composable () -> Unit) {
+private fun LoginBackground(content: @Composable () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -147,7 +147,7 @@ fun LoginScreen(
 
 @Preview
 @Composable
-fun BackgroundPreview() {
+private fun BackgroundPreview() {
     WorkSyncTheme {
         LoginBackground { }
     }
@@ -155,17 +155,16 @@ fun BackgroundPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview() {
+private fun LoginScreenPreview() {
+    val mockAuthRepo = MockUserAuthRepository()
+    val mockWorkersRepo = MockEmployeesRepository()
+    val mockWorkSessionRepository = MockWorkSessionRepository()
+    val authUserUseCase = AuthUserUseCase(mockAuthRepo, mockWorkersRepo)
+    val saveWorkSessionUseCase = SaveWorkSessionUseCase(mockWorkSessionRepository)
+
+    val loginViewModel = LoginViewModel(authUserUseCase)
+    val sessionViewModel = SessionViewModel(saveWorkSessionUseCase)
     WorkSyncTheme {
-        val mockAuthRepo = MockUserAuthRepository()
-        val mockWorkersRepo = MockEmployeesRepository()
-        val mockWorkSessionRepository = MockWorkSessionRepository()
-        val authUserUseCase = AuthUserUseCase(mockAuthRepo, mockWorkersRepo)
-        val saveWorkSessionUseCase = SaveWorkSessionUseCase(mockWorkSessionRepository)
-
-        val loginViewModel = LoginViewModel(authUserUseCase)
-        val sessionViewModel = SessionViewModel(saveWorkSessionUseCase)
-
         LoginScreen(loginViewModel = loginViewModel,
             sessionViewModel = sessionViewModel,
             onLoginSuccess = {})

@@ -9,7 +9,7 @@ class MockJobsDataRepository : JobsRepository {
     // Lista simulada de trabajos
     private val mockJobDomainModelData = mutableListOf(
         JobDomainModel(
-            workId = "1",
+            jobId = "1",
             jobName = "Instalación Cable Fibra Optica",
             clientName = "Andrés Sanz",
             description = "",
@@ -17,7 +17,7 @@ class MockJobsDataRepository : JobsRepository {
             assignedTo = "3"
         ),
         JobDomainModel(
-            workId = "2",
+            jobId = "2",
             jobName = "Instalación Router",
             clientName = "Juan Pérez",
             description = "Instalación de Router",
@@ -25,7 +25,7 @@ class MockJobsDataRepository : JobsRepository {
             assignedTo = "3"
         ),
         JobDomainModel(
-            workId = "3",
+            jobId = "3",
             jobName = "Configuración de Red Wifi",
             clientName = "Elisa Main",
             description = "",
@@ -33,7 +33,7 @@ class MockJobsDataRepository : JobsRepository {
             assignedTo = "2"
         ),
         JobDomainModel(
-            workId = "4",
+            jobId = "4",
             jobName = "Optimización de la Señal Red Wifi",
             clientName = "Daniel Rodriquez",
             description = "Mejorar calidad WIFI",
@@ -41,7 +41,7 @@ class MockJobsDataRepository : JobsRepository {
             assignedTo = "3"
         ),
         JobDomainModel(
-            workId = "5",
+            jobId = "5",
             jobName = "Configuración de Red Local",
             clientName = "Sara Ban",
             description = "Configuración red local.",
@@ -57,6 +57,10 @@ class MockJobsDataRepository : JobsRepository {
         } else {
             jobs.filter { it.assignedTo == user.userId }
         }
+    }
+
+    override fun getJobById(jobId: String): JobDomainModel? {
+        return mockJobDomainModelData.firstOrNull { it.jobId == jobId }
     }
 
     override fun addJob(jobDomainModel: JobDomainModel): Boolean {

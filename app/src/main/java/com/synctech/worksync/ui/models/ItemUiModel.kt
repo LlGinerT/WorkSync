@@ -12,7 +12,7 @@ import com.synctech.worksync.domain.models.ItemsDomainModel
  * @param precio Precio del material.
  * @param cantidad Cantidad disponible del material (puede ser 0 si no hay unidades).
  */
-data class MaterialUiModel(
+data class ItemUiModel(
     val itemId: Int,
     val name: String,
     val precio: Double,
@@ -23,9 +23,9 @@ data class MaterialUiModel(
  * Convierte un objeto de tipo [ItemsDomainModel] del dominio a su representación en la UI.
  *
  * @receiver [ItemsDomainModel] Modelo de dominio de un material individual.
- * @return [MaterialUiModel] Modelo de UI con los datos transformados.
+ * @return [ItemUiModel] Modelo de UI con los datos transformados.
  */
-fun ItemsDomainModel.toUi() = MaterialUiModel(
+fun ItemsDomainModel.toUi() = ItemUiModel(
     itemId = materialId,
     name = name,
     precio = precio,

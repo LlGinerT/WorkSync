@@ -30,7 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.synctech.worksync.ui.models.MaterialUiModel
+import com.synctech.worksync.ui.models.ItemUiModel
 import com.synctech.worksync.ui.theme.WorkSyncTheme
 
 /**
@@ -103,11 +103,11 @@ fun MaterialContent(
 /**
  * Lista de materiales mostrada en la pantalla.
  *
- * @param materials Lista de objetos MaterialUiModel que contienen los datos de los materiales.
+ * @param materials Lista de objetos ItemUiModel que contienen los datos de los materiales.
  */
 @Composable
 fun MaterialList(
-    materials: List<MaterialUiModel>
+    materials: List<ItemUiModel>
 ) {
     LazyColumn(
         modifier = Modifier
@@ -192,11 +192,11 @@ fun MaterialScreenPreview() {
         MaterialContent(
             uiState = InventoryState(
                 showLoadingIndicator = false, materials = listOf(
-                    MaterialUiModel(1, "Cable de red", 10.0, 200),
-                    MaterialUiModel(2, "Router WiFi", 50.0, 25),
-                    MaterialUiModel(3, "Switch de red", 120.0, 15),
-                    MaterialUiModel(4, "Adaptador RJ45", 5.0, 300),
-                    MaterialUiModel(5, "Módem", 80.0, 10)
+                    ItemUiModel(1, "Cable de red", 10.0, 200),
+                    ItemUiModel(2, "Router WiFi", 50.0, 25),
+                    ItemUiModel(3, "Switch de red", 120.0, 15),
+                    ItemUiModel(4, "Adaptador RJ45", 5.0, 300),
+                    ItemUiModel(5, "Módem", 80.0, 10)
                 )),
             modifier = Modifier,
             backgroundColor = MaterialTheme.colorScheme.primaryContainer
@@ -206,7 +206,7 @@ fun MaterialScreenPreview() {
 
 //Codigo usando Text y for each para simplificar codigo.
 //@Composable
-//fun SimpleMaterialList(materials: List<MaterialUiModel>) {
+//fun SimpleMaterialList(materials: List<ItemUiModel>) {
 //    Column(
 //        modifier = Modifier
 //            .fillMaxSize()

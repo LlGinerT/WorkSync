@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.synctech.worksync.ui.models.JobUIModel
+import com.synctech.worksync.ui.models.JobUiModel
 import com.synctech.worksync.ui.theme.WorkSyncTheme
 
 /**
@@ -26,7 +26,7 @@ import com.synctech.worksync.ui.theme.WorkSyncTheme
  *             incluyendo el nombre del trabajo, cliente, descripción y dirección.
  */
 @Composable
-fun JobCard(job: JobUIModel, onClick: () -> Unit) {
+fun JobCard(job: JobUiModel, onClick: () -> Unit) {
     ElevatedCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp, pressedElevation = 0.dp),
         colors = CardDefaults.elevatedCardColors(
@@ -83,7 +83,7 @@ fun JobCard(job: JobUIModel, onClick: () -> Unit) {
 fun JobCardPreview() {
     WorkSyncTheme {
         JobCard(
-            job = JobUIModel(
+            job = JobUiModel(
                 jobName = "Ejemplo de job",
                 clientName = "Pepito Perez",
                 description = "Instalación fibra optica",

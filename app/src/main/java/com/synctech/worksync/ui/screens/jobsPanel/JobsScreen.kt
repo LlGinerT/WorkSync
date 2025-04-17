@@ -22,7 +22,7 @@ import androidx.navigation.NavController
 import com.synctech.worksync.ui.components.JobCard
 
 @Composable
-fun JobsBackground(content: @Composable () -> Unit) {
+private fun JobsBackground(content: @Composable () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -77,6 +77,8 @@ fun JobScreen(
         }
     }
 }
+
+
 
 
 

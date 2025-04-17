@@ -12,8 +12,7 @@ package com.synctech.worksync.domain.models
  * @param assignedTo Id del trabajador
  */
 data class JobDomainModel(
-    // Te falta añadir un WorkID
-    val workId: String,
+    val jobId: String,
     val jobName: String,
     val clientName: String,
     val description: String,

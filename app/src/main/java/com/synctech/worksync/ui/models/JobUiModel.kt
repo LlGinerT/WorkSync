@@ -10,7 +10,7 @@ import com.synctech.worksync.domain.models.JobDomainModel
  * @param description La descripción del trabajo.
  * @param address La dirección donde se debe realizar el trabajo.
  */
-data class JobUIModel(
+data class JobUiModel(
     val jobName: String,
     val clientName: String,
     val description: String,
@@ -19,11 +19,11 @@ data class JobUIModel(
 )
 
 /**
- * Convierte un objeto [JobDomainModel] del dominio a un modelo de datos para la UI [JobUIModel].
+ * Convierte un objeto [JobDomainModel] del dominio a un modelo de datos para la UI [JobUiModel].
  *
- * @return Un objeto [JobUIModel] que contiene la información del trabajo en formato adecuado para la UI.
+ * @return Un objeto [JobUiModel] que contiene la información del trabajo en formato adecuado para la UI.
  */
-fun JobDomainModel.toUI() = JobUIModel(
+fun JobDomainModel.toUi() = JobUiModel(
     jobName = this.jobName,
     clientName = this.clientName,
     description = this.description,

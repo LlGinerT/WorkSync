@@ -1,6 +1,6 @@
 package com.synctech.worksync.ui.screens.jobsPanel
 
-import com.synctech.worksync.ui.models.JobUIModel
+import com.synctech.worksync.ui.models.JobUiModel
 
 /**
  * Representa el estado de la UI para mostrar la lista de trabajos y el indicador de carga.
@@ -11,8 +11,8 @@ import com.synctech.worksync.ui.models.JobUIModel
  */
 data class JobsState(
     val showLoadingIndicator: Boolean = false,
-    val jobsList: List<JobUIModel> = emptyList(), // Lista de todos los trabajos
-    val filteredJobs: List<JobUIModel> = emptyList(),
+    val jobsList: List<JobUiModel> = emptyList(), // Lista de todos los trabajos
+    val filteredJobs: List<JobUiModel> = emptyList(),
     val errorMessage: String? = null
 // filteredJobs solo sirve tener 2 listas, si aplicamos filtros
 // dinamicos con una sola lista sirve para si es admin o no

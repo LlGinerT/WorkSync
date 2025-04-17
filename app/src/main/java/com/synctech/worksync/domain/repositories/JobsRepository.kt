@@ -12,10 +12,20 @@ interface JobsRepository {
     // mil perdones
     /**
      * Obtiene la lista de trabajos disponibles.
+     *
      * @param user [EmployeeDomainModel] que hace la petición.
-     * @return Lista de trabajos disponibles para el usuario.
+     * @return Lista de [JobDomainModel] disponibles para el usuario.
      */
     fun getJobs(user: EmployeeDomainModel): List<JobDomainModel>
+
+    /**
+     * Recupera un Job por su ID,
+     * preferiblemente del Cache(En el futuro cuando conectemos a Firebase)
+     *
+     * @param jobId [String] id del trabajo a recuperar
+     * @return [JobDomainModel]
+     * */
+    fun getJobById(jobId: String): JobDomainModel?
 
     /**
      * Agrega un nuevo trabajo a la lista de trabajos. Solo un administrador puede hacerlo.
@@ -26,6 +36,7 @@ interface JobsRepository {
     fun addJob(jobDomainModel: JobDomainModel): Boolean
 
     fun updateJob(jobDomainModel: JobDomainModel): Boolean
+
     /**
      * Elimina un trabajo de la lista. Solo un administrador puede hacerlo.
      *
