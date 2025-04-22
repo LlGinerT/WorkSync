@@ -9,30 +9,18 @@ import com.synctech.worksync.domain.repositories.InventoryRepository
  * Proporciona datos ficticios para simular la interacción con un repositorio real.
  */
 class MockInventoryDataRepository : InventoryRepository {
-    private val itemsDomainModels = mutableListOf(
+    private val mockitemsDomainModelData = mutableListOf(
         ItemsDomainModel(
-            materialId = 1,
-            name = "Cable De Red",
-            precio = 100.50,
-            cantidad = 35
+            materialId = 1, name = "Cable De Red", precio = 100.50, cantidad = 35
         ),
         ItemsDomainModel(
-            materialId = 2,
-            name = "Adaptador RJ45",
-            precio = 170.50,
-            cantidad = 60
+            materialId = 2, name = "Adaptador RJ45", precio = 170.50, cantidad = 60
         ),
         ItemsDomainModel(
-            materialId = 3,
-            name = "Módem",
-            precio = 65.50,
-            cantidad = 120
+            materialId = 3, name = "Módem", precio = 65.50, cantidad = 120
         ),
         ItemsDomainModel(
-            materialId = 4,
-            name = "Switch de Red",
-            precio = 80.50,
-            cantidad = 46
+            materialId = 4, name = "Switch de Red", precio = 80.50, cantidad = 46
         ),
     )
 
@@ -41,8 +29,8 @@ class MockInventoryDataRepository : InventoryRepository {
      *
      * @return Lista de materiales.
      */
-    override fun getMaterials(): List<ItemsDomainModel> {
-        return itemsDomainModels
+    override suspend fun getItems(): List<ItemsDomainModel> {
+        return mockitemsDomainModelData
     }
 
     /**
@@ -52,9 +40,8 @@ class MockInventoryDataRepository : InventoryRepository {
      * @param itemsDomainModel El itemsDomainModel a agregar.
      * @return `true` si el itemsDomainModel se agregó correctamente, siempre retorna `true` en esta implementación.
      */
-    override fun addMaterials(
-        employee: EmployeeDomainModel,
-        itemsDomainModel: ItemsDomainModel
+    override suspend fun addItem(
+        employee: EmployeeDomainModel, itemsDomainModel: ItemsDomainModel
     ): Boolean {
         return true
     }
@@ -66,10 +53,13 @@ class MockInventoryDataRepository : InventoryRepository {
      * @param itemsDomainModel El itemsDomainModel a eliminar.
      * @return `true` si el itemsDomainModel se eliminó correctamente, siempre retorna `true` en esta implementación.
      */
-    override fun removeMaterials(
-        employee: EmployeeDomainModel,
-        itemsDomainModel: ItemsDomainModel
+    override suspend fun removeItem(
+        employee: EmployeeDomainModel, itemsDomainModel: ItemsDomainModel
     ): Boolean {
         return true
+    }
+
+    override suspend fun updateItem() {
+        TODO("Not yet implemented")
     }
 }

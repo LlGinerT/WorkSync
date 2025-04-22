@@ -62,7 +62,7 @@ private fun LoginBackground(content: @Composable () -> Unit) {
 @Composable
 fun LoginScreen(
     loginViewModel: LoginViewModel,
-    sessionViewModel: SessionViewModel,
+    sessionViewModel: SessionViewModel, //TODO: Meter sessionViewModel en el LoginViewModel
     onLoginSuccess: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -85,7 +85,7 @@ fun LoginScreen(
             )
         }
     }
-
+    //TODO: Refactorizar
     LoginBackground {
         Column(
             modifier = modifier
@@ -129,6 +129,7 @@ fun LoginScreen(
                 /*
                 Boton con fines de testeo de cerrar sesion hasta que este la navegación
                 */
+                //TODO: Quitar boton
                 Row(modifier = Modifier.fillMaxWidth(), Arrangement.Center) {
                     Button(
                         onClick = { sessionViewModel.logout() },
@@ -144,7 +145,7 @@ fun LoginScreen(
     }
 }
 
-
+//TODO: extraer previews
 @Preview
 @Composable
 private fun BackgroundPreview() {

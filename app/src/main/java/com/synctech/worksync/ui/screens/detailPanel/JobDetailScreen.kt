@@ -54,9 +54,28 @@ fun JobDetailScreen(jobDetailViewModel: JobDetailViewModel, jobId: String) {
     }
 
     JobDetailBackground {
-        job?.let {
-            JobDetailContent(job = job, context = context)
-        } ?: CircularProgressIndicator()
+        when {
+            uiState.showLoadingIndicator -> {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            uiState.errorMessage != null -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = uiState.errorMessage ?: "Error desconocido",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+            }
+
+            job != null -> {
+                JobDetailContent(job = job, context = context)
+            }
+        }
+
     }
 }
 

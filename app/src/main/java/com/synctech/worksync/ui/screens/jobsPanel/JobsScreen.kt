@@ -10,7 +10,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -26,7 +27,7 @@ private fun JobsBackground(content: @Composable () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(colorScheme.background)
     ) {
         content()
     }
@@ -50,30 +51,40 @@ fun JobScreen(
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
                         text = uiState.errorMessage ?: "Error desconocido",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyLarge
+                        color = colorScheme.error,
+                        style = typography.bodyLarge
                     )
                 }
             }
 
             else -> {
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(minSize = 150.dp),
-                    modifier = modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    contentPadding = PaddingValues(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(uiState.jobsList) { job ->
-                        JobCard(job = job, onClick = {
-                            // Aquí iría navegación a detalles, por ejemplo
-                            // navController.navigate("jobDetail/${job.workId}")
-                        })
+                if (uiState.jobsList.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = "No hay trabajos disponibles.",
+                            color = colorScheme.onBackground,
+                            style = typography.bodyLarge
+                        )
+                    }
+                } else {
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(minSize = 150.dp),
+                        modifier = modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        contentPadding = PaddingValues(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(uiState.jobsList) { job ->
+                            JobCard(job = job, onClick = {
+                                // navController.navigate("jobDetail/${job.workId}")
+                            })
+                        }
                     }
                 }
             }
+
         }
     }
 }

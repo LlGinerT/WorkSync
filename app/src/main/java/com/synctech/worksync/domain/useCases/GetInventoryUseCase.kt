@@ -1,15 +1,16 @@
 package com.synctech.worksync.domain.useCases
 
+import android.util.Log
 import com.synctech.worksync.data.testData.MockInventoryDataRepository
 import com.synctech.worksync.domain.models.ItemsDomainModel
 
 /**
  * Caso de uso para obtener la lista de materiales desde el repositorio.
  *
- * @param materialRepository Repositorio de materiales utilizado para obtener los datos.
+ * @param inventoryRepository Repositorio de materiales utilizado para obtener los datos.
  */
 class GetInventoryUseCase(
-    private val materialRepository: MockInventoryDataRepository
+    private val inventoryRepository: MockInventoryDataRepository
 ) {
 
     /**
@@ -17,7 +18,14 @@ class GetInventoryUseCase(
      *
      * @return Lista de materiales disponibles.
      */
-    operator fun invoke(): List<ItemsDomainModel> {
-        return materialRepository.getMaterials()
+    suspend operator fun invoke(): Result<List<ItemsDomainModel>> {
+        return try {
+            val itemList = inventoryRepository.getItems()
+            Log.i("GetInventoryUseCase", "Inventario encontrado: ${itemList.size}")
+            Result.success(itemList)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }
+

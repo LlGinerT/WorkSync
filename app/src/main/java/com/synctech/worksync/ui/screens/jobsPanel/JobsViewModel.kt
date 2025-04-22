@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
 /**
  * ViewModel para la gestión de trabajos.
  *
- * @param getJobsUseCase Caso de uso para obtener los trabajos.
+ * @param getJobsUseCase [GetJobsUseCase] Caso de uso para obtener los trabajos.
  * @param sessionViewModel [SessionViewModel] compartido que gestiona la sesion iniciada
  */
 class JobsViewModel(
@@ -28,7 +28,6 @@ class JobsViewModel(
     val uiState: StateFlow<JobsState> = _uiState
 
     init {
-        Log.d("JobsViewModel", "ViewModel inicializado.")
         sessionViewModel.currentUser?.let { user ->
             viewModelScope.launch {
                 fetchWorks(user)
@@ -39,38 +38,43 @@ class JobsViewModel(
 
     /**
      * Obtiene los trabajos y actualiza el estado de la UI.
+     *
+     * @param user [EmployeeDomainModel] Empleado del que se obtienen los trabajos.
      */
-    private fun fetchWorks(user: EmployeeDomainModel) {
-        viewModelScope.launch {
+    private suspend fun fetchWorks(user: EmployeeDomainModel) {
+
+        _uiState.update {
+            it.copy(
+                showLoadingIndicator = true, errorMessage = null
+            )
+        }
+
+        // Dispatchers.io creo que deberia ir en el repositorio de bases de datos
+        // aqui ya manejamos con el viewModelScope.launch y con el usecase con suspend
+        //TODO: Comprobar Dispatchers.IO
+        val result = withContext(Dispatchers.IO) {
+            getJobsUseCase(user)
+        }
+        // he cambiado tu try catch por result en el UseCase
+        // misma mecanica, mejor gestion de varios errores que pueden dar
+        // los repositorios cuando metamos FireBase.
+        result.onSuccess { jobs ->
             _uiState.update {
                 it.copy(
-                    showLoadingIndicator = true, errorMessage = null
+                    jobsList = jobs.map { job -> job.toUi() },
+                    showLoadingIndicator = false,
+                    errorMessage = null
                 )
             }
-
-            val result = withContext(Dispatchers.IO) {
-                getJobsUseCase(user)
+            Log.i("JobsViewModel", "Trabajos cargados con exito: ${jobs.size}")
+        }.onFailure { error ->
+            _uiState.update {
+                it.copy(
+                    showLoadingIndicator = false,
+                    errorMessage = error.message ?: "Error desconocido"
+                )
             }
-            // he cambiado tu try catch por result en el UseCase
-            // misma mecanica, mejor gestion de varios errores que pueden dar
-            // los repositorios cuando metamos FireBase.
-            result.onSuccess { jobs ->
-                _uiState.update {
-                    it.copy(
-                        jobsList = jobs.map { job -> job.toUi() },
-                        showLoadingIndicator = false,
-                        errorMessage = null
-                    )
-                }
-            }.onFailure { error ->
-                Log.e("JobsViewModel", "Error obteniendo trabajos", error)
-                _uiState.update {
-                    it.copy(
-                        showLoadingIndicator = false,
-                        errorMessage = error.message ?: "Error desconocido"
-                    )
-                }
-            }
+            Log.e("JobsViewModel", "Error obteniendo trabajos: ${error.message}", error)
         }
     }
 }

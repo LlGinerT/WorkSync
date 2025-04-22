@@ -1,4 +1,4 @@
-package com.synctech.worksync.ui.screens.InventoryPanel
+package com.synctech.worksync.ui.screens.inventoryPanel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -27,35 +27,42 @@ class InventoryViewModel(
     val uiState: StateFlow<InventoryState> = _uiState.asStateFlow()
 
     init {
-        Log.d("InventoryViewModel", "ViewModel inicializado.")
-        fetchMaterials()
+        viewModelScope.launch {
+            fetchMaterials()
+            Log.i("InventoryViewModel", "ViewModel inicializado.")
+        }
     }
 
     /**
      * Obtiene la lista de materiales y actualiza el estado de la interfaz de usuario.
      * Maneja el proceso en un coroutine utilizando `viewModelScope` y `Dispatchers.IO`.
      */
-    private fun fetchMaterials() = viewModelScope.launch {
+    private suspend fun fetchMaterials() {
         _uiState.update { it.copy(showLoadingIndicator = true) }
-        Log.d("JobsViewModel", "Iniciando la carga de materiales...")
-        try {
-            val materialDomain = withContext(Dispatchers.IO) {
-                Log.d(
-                    "InventoryViewModel",
-                    "Llamando a getInventoryUseCase para obtener materiales..."
+
+        val result = withContext(Dispatchers.IO) {
+            getInventoryUseCase()
+        }
+
+        result.onSuccess { items ->
+            _uiState.update {
+                it.copy(
+                    inventory = items.map { item -> item.toUi() },
+                    showLoadingIndicator = false,
+                    errorMessage = null
                 )
-                getInventoryUseCase()
             }
+            Log.i("InventoryViewModel", "Inventario cargado con exito: ${items.size}")
+        }.onFailure { error ->
             _uiState.update {
                 it.copy(
                     showLoadingIndicator = false,
-                    materials = materialDomain.map { it.toUi() }
+                    errorMessage = error.message ?: "Error desconocido"
                 )
             }
-            Log.d("InventoryViewModel", "Materiales cargados exitosamente.")
-        } catch (e: Exception) {
-            Log.e("InventoryViewModel", "Error al cargar materiales", e)
-            _uiState.update { it.copy(showLoadingIndicator = false) }
+            Log.e("InventoryViewModel", "Error obteniendo inventario: ${error.message}", error)
         }
+
     }
 }
+

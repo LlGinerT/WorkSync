@@ -13,7 +13,7 @@ interface InventoryRepository {
      *
      * @return Lista de materiales.
      */
-    fun getMaterials(): List<ItemsDomainModel>
+    suspend fun getItems(): List<ItemsDomainModel>
 
     /**
      * Agrega un itemsDomainModel al sistema.
@@ -22,7 +22,10 @@ interface InventoryRepository {
      * @param itemsDomainModel ItemsDomainModel a agregar.
      * @return `true` si el itemsDomainModel se agregó correctamente, `false` en caso contrario.
      */
-    fun addMaterials(employee: EmployeeDomainModel, itemsDomainModel: ItemsDomainModel): Boolean
+    suspend fun addItem(
+        employee: EmployeeDomainModel,
+        itemsDomainModel: ItemsDomainModel
+    ): Boolean
 
     /**
      * Elimina un itemsDomainModel del sistema.
@@ -31,5 +34,11 @@ interface InventoryRepository {
      * @param itemsDomainModel ItemsDomainModel a eliminar.
      * @return `true` si el itemsDomainModel se eliminó correctamente, `false` en caso contrario.
      */
-    fun removeMaterials(employee: EmployeeDomainModel, itemsDomainModel: ItemsDomainModel): Boolean
+    suspend fun removeItem(
+        employee: EmployeeDomainModel,
+        itemsDomainModel: ItemsDomainModel
+    ): Boolean
+
+    //TODO
+    suspend fun updateItem()
 }

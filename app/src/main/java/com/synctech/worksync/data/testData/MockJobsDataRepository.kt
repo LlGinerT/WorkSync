@@ -50,7 +50,7 @@ class MockJobsDataRepository : JobsRepository {
         )
     )
 
-    override fun getJobs(user: EmployeeDomainModel): List<JobDomainModel> {
+    override suspend fun getJobs(user: EmployeeDomainModel): List<JobDomainModel> {
         val jobs = mockJobDomainModelData
         return if (user.isAdmin) {
             jobs
@@ -59,19 +59,19 @@ class MockJobsDataRepository : JobsRepository {
         }
     }
 
-    override fun getJobById(jobId: String): JobDomainModel? {
+    override suspend fun getJobById(jobId: String): JobDomainModel? {
         return mockJobDomainModelData.firstOrNull { it.jobId == jobId }
     }
 
-    override fun addJob(jobDomainModel: JobDomainModel): Boolean {
+    override suspend fun addJob(jobDomainModel: JobDomainModel): Boolean {
         TODO("Not yet implemented")
     }
 
-    override fun updateJob(jobDomainModel: JobDomainModel): Boolean {
+    override suspend fun updateJob(jobDomainModel: JobDomainModel): Boolean {
         TODO("Not yet implemented")
     }
 
-    override fun removeJob(jobDomainModel: JobDomainModel): Boolean {
+    override suspend fun removeJob(jobDomainModel: JobDomainModel): Boolean {
         TODO("Not yet implemented")
     }
 }

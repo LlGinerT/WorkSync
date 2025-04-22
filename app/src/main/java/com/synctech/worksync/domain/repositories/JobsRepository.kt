@@ -16,7 +16,7 @@ interface JobsRepository {
      * @param user [EmployeeDomainModel] que hace la petición.
      * @return Lista de [JobDomainModel] disponibles para el usuario.
      */
-    fun getJobs(user: EmployeeDomainModel): List<JobDomainModel>
+    suspend fun getJobs(user: EmployeeDomainModel): List<JobDomainModel>
 
     /**
      * Recupera un Job por su ID,
@@ -25,7 +25,7 @@ interface JobsRepository {
      * @param jobId [String] id del trabajo a recuperar
      * @return [JobDomainModel]
      * */
-    fun getJobById(jobId: String): JobDomainModel?
+    suspend fun getJobById(jobId: String): JobDomainModel?
 
     /**
      * Agrega un nuevo trabajo a la lista de trabajos. Solo un administrador puede hacerlo.
@@ -33,9 +33,9 @@ interface JobsRepository {
      * @param jobDomainModel Trabajo a agregar.
      * @return `true` si el trabajo fue agregado, `false` si no se tenía permiso.
      */
-    fun addJob(jobDomainModel: JobDomainModel): Boolean
+    suspend fun addJob(jobDomainModel: JobDomainModel): Boolean
 
-    fun updateJob(jobDomainModel: JobDomainModel): Boolean
+    suspend fun updateJob(jobDomainModel: JobDomainModel): Boolean
 
     /**
      * Elimina un trabajo de la lista. Solo un administrador puede hacerlo.
@@ -43,6 +43,6 @@ interface JobsRepository {
      * @param jobDomainModel Trabajo a eliminar.
      * @return `true` si el trabajo fue eliminado, `false` si no se tenía permiso.
      */
-    fun removeJob(jobDomainModel: JobDomainModel): Boolean
+    suspend fun removeJob(jobDomainModel: JobDomainModel): Boolean
 
 }
