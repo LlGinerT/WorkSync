@@ -1,49 +1,65 @@
 package com.synctech.worksync.domain.useCases
 
 import android.util.Log
+import com.synctech.worksync.domain.exceptions.SessionError
 import com.synctech.worksync.domain.models.WorkSessionDomainModel
 import com.synctech.worksync.domain.repositories.WorkSessionRepository
-import java.util.UUID
 
 /**
- * Caso de uso para guardar una sesión de trabajo completa en el repositorio.
+ * Caso de uso para finalizar y guardar una sesión de trabajo que ya ha sido iniciada.
  *
- * Este caso de uso se encarga de:
- * - Calcular la duración de la sesión en segundos a partir de dos timestamps (inicio y fin).
- * - Generar un identificador único para la sesión.(posiblemente inecesario al implementar Firebase)
- * - Crear una instancia de `WorkSessionDomainModel`.
- * - Enviarla al repositorio para su almacenamiento.
+ * Este caso de uso se ejecuta normalmente al cerrar sesión, y se encarga de:
+ * - Calcular la duración de la sesión en segundos
+ * - Actualizar una sesión ya existente en el repositorio
  *
- *
- * @property repository Repositorio responsable de guardar la sesión.
+ * @property repository Repositorio que gestiona las sesiones de trabajo.
  */
-
-class SaveWorkSessionUseCase(private val repository: WorkSessionRepository) {
+class UpdateWorkSessionUseCase(
+    private val repository: WorkSessionRepository
+) {
 
     /**
-     * Ejecuta el guardado de una sesión de trabajo.
+     * Ejecuta la actualización de una sesión de trabajo.
      *
-     * @param userID ID del trabajador al que pertenece la sesión.
-     * @param sessionStart Marca de tiempo (en milisegundos) del inicio de la jornada.
-     * @param sessionEnd Marca de tiempo (en milisegundos) del final de la jornada.
+     * @param sessionId ID de la sesión iniciada anteriormente.
+     * @param userId ID del trabajador al que pertenece la sesión.
+     * @param sessionStart Marca de tiempo del inicio (en milisegundos).
+     * @param sessionEnd Marca de tiempo del fin (en milisegundos).
+     * @return [Result.success] si se actualizó correctamente, o [Result.failure] con [SessionError] si hubo un problema.
      */
-    suspend operator fun invoke(userID: String, sessionStart: Long, sessionEnd: Long) {
-        val sessionDurationInSeconds = (sessionEnd - sessionStart) / 1000
-        val session = WorkSessionDomainModel(
-            sessionId = UUID.randomUUID().toString(),
-            userId = userID,
-            startTime = sessionStart,
-            endTime = sessionEnd,
-            durationInSeconds = sessionDurationInSeconds
-        )
-        repository.saveWorkSession(session)
+    suspend operator fun invoke(
+        sessionId: String,
+        userId: String,
+        sessionStart: Long,
+        sessionEnd: Long
+    ): Result<Unit> {
+        return try {
+            val duration = (sessionEnd - sessionStart) / 1000
 
-        //Bloque Try/Catch con fines de Debug
-        try {
-            repository.getWorkSessionsByUser(userID)
-            Log.i("SaveWorkSessionUseCase","Sesion guardada: ${repository.getWorkSessionsByUser(userID)}")
-        }catch (e: Exception){
-            Log.w("SaveWorkSessionUseCase","Sesion no encontrada en el repositorio",e)
+            val session = WorkSessionDomainModel(
+                sessionId = sessionId,
+                userId = userId,
+                startTime = sessionStart,
+                endTime = sessionEnd,
+                durationInSeconds = duration
+            )
+
+            val updated = repository.updateWorkSession(session)
+
+            if (updated) {
+                Log.i(
+                    "UpdateWorkSessionUseCase",
+                    "Sesión finalizada para $userId con duración: $duration segundos"
+                )
+                Result.success(Unit)
+            } else {
+                Log.w("UpdateWorkSessionUseCase", "No se encontró la sesión para actualizar")
+                Result.failure(SessionError.SaveFailed)
+            }
+
+        } catch (e: Exception) {
+            Log.e("UpdateWorkSessionUseCase", "Error técnico al actualizar sesión", e)
+            Result.failure(SessionError.SaveFailed)
         }
     }
 }

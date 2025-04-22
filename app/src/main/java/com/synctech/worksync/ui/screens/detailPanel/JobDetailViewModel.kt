@@ -2,7 +2,7 @@ package com.synctech.worksync.ui.screens.detailPanel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.synctech.worksync.domain.exceptions.JobsErrors
+import com.synctech.worksync.domain.exceptions.JobsError
 import com.synctech.worksync.domain.useCases.GetJobByIdUseCase
 import com.synctech.worksync.ui.models.toUi
 import com.synctech.worksync.ui.session.SessionViewModel
@@ -45,12 +45,12 @@ class JobDetailViewModel(
                 }
                 .onFailure { error ->
                     val message = when (error) {
-                        is JobsErrors.NotFound -> {
+                        is JobsError.NotFound -> {
                             Log.w("JobDetailViewModel", "Warning: ${error.message}")
                             "El trabajo no existe."
                         }
 
-                        is JobsErrors.Unauthorized -> {
+                        is JobsError.Unauthorized -> {
                             Log.w("JobDetailViewModel", "Warning: ${error.message}")
                             "No tienes permiso para ver este trabajo."
                         }

@@ -1,7 +1,7 @@
 package com.synctech.worksync.domain.useCases
 
 import android.util.Log
-import com.synctech.worksync.domain.exceptions.JobsErrors
+import com.synctech.worksync.domain.exceptions.JobsError
 import com.synctech.worksync.domain.models.EmployeeDomainModel
 import com.synctech.worksync.domain.models.JobDomainModel
 import com.synctech.worksync.domain.repositories.JobsRepository
@@ -27,10 +27,10 @@ class GetJobByIdUseCase(
     ): Result<JobDomainModel> {
         return try {
             val job = repository.getJobById(jobId)
-                ?: return Result.failure(JobsErrors.NotFound(jobId))
+                ?: return Result.failure(JobsError.NotFound(jobId))
 
             if (!user.isAdmin && job.assignedTo != user.userId) {
-                return Result.failure(JobsErrors.Unauthorized)
+                return Result.failure(JobsError.Unauthorized)
             }
             Log.i("GetJobByIdUseCase", "Trabajo encontrado: ${job.jobId}")
             return Result.success(job)

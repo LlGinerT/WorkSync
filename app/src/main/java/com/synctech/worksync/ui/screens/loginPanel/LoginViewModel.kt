@@ -1,12 +1,18 @@
 package com.synctech.worksync.ui.screens.loginPanel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.synctech.worksync.domain.exceptions.AuthError
+import com.synctech.worksync.domain.models.EmployeeDomainModel
 import com.synctech.worksync.domain.useCases.AuthUserUseCase
-import com.synctech.worksync.ui.session.SessionViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
@@ -22,28 +28,31 @@ class LoginViewModel(
     private val _uiState = MutableStateFlow(LoginState())
     val uiState: StateFlow<LoginState> = _uiState.asStateFlow()
 
+    private val _eventFlow = MutableSharedFlow<LoginUiEvent>()
+    val eventFlow: SharedFlow<LoginUiEvent> = _eventFlow.asSharedFlow()
+
     /**
-     * Actualiza el valor del campo email y limpia el error si lo hubiera.
+     * Actualiza el campo de email en el estado y limpia el error correspondiente.
      *
-     * @param email Nuevo valor introducido en el campo email.
+     * @param email Nuevo valor introducido en el campo de email.
      */
     fun onEmailChanged(email: String) {
-        _uiState.value = _uiState.value.copy(email = email, emailError = null)
+        _uiState.update { it.copy(email = email, emailError = null) }
         updateLoginButtonState()
     }
 
     /**
-     * Actualiza el valor del campo contraseña y limpia el error si lo hubiera.
+     * Actualiza el campo de contraseña en el estado y limpia el error correspondiente.
      *
-     * @param password Nuevo valor introducido en el campo contraseña.
+     * @param password Nuevo valor introducido en el campo de contraseña.
      */
     fun onPasswordChanged(password: String) {
-        _uiState.value = _uiState.value.copy(password = password, passwordError = null)
+        _uiState.update { it.copy(password = password, passwordError = null) }
         updateLoginButtonState()
     }
 
     /**
-     * Habilita o deshabilita el botón de login según si los campos están completos.
+     * Habilita o deshabilita el botón de login en función de si los campos están completos.
      */
     private fun updateLoginButtonState() {
         val state = _uiState.value
@@ -52,53 +61,68 @@ class LoginViewModel(
     }
 
     /**
-     * Intenta autenticar al usuario y almacenarlo en la sesión.
+     * Intenta autenticar al usuario con el caso de uso [AuthUserUseCase]. Si la autenticación es
+     * exitosa, ejecuta una lambda suspendida que se encarga de iniciar la sesión (desacoplada).
      *
-     * @param sessionViewModel ViewModel compartido donde se almacena el trabajador autenticado.
+     * @param onLoginConfirmed Lógica que se ejecuta si el usuario es válido (ej. sessionViewModel.login(user)).
      */
-    fun loginAndSetSession(sessionViewModel: SessionViewModel) {
+    fun login(onLoginConfirmed: suspend (EmployeeDomainModel) -> Result<Unit>) {
         val email = _uiState.value.email
         val password = _uiState.value.password
 
-        _uiState.value = _uiState.value.copy(isLoading = true)
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                emailError = null,
+                passwordError = null
+            )
+        }
 
         viewModelScope.launch {
-            val emailExists = authUserUseCase.checkIfEmailExists(email)
-            // Comprobamos si existe el usuario
-            if (!emailExists) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    emailError = "El usuario no existe",
-                    passwordError = null
-                )
-                return@launch // Sale de la corutina si no existe el email en la BD, y "reiniciamos"
-                              // con el estado actualizado con el error.
-            }
+            val result = authUserUseCase(email, password)
 
-            // Si existe, intentamos autenticar a traves del caso de uso
-            val worker = authUserUseCase(email, password)
-            if (worker != null) {
-                sessionViewModel.setWorker(worker)
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    loginSuccess = true,
-                    emailError = null,
-                    passwordError = null
-                )
-            } else { //Si no logra autenticar, solo puede significar que la contraseña es incorrecta
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    emailError = null,
-                    passwordError = "Contraseña incorrecta"
-                )
-            }
+            result.fold(
+                onSuccess = { user ->
+                    val sessionResult = onLoginConfirmed(user)
+                    sessionResult.onSuccess {
+                        _uiState.update { it.copy(isLoading = false) }
+                        Log.i("LoginViewModel", "Inicio de sesión exitoso para ${user.userId}")
+                        _eventFlow.emit(LoginUiEvent.LoginSuccess)
+                    }.onFailure { error ->
+                        _uiState.update { it.copy(isLoading = false) }
+                        Log.e("LoginViewModel", "Error al iniciar sesión: ${error.message}", error)
+                    }
+                },
+                onFailure = { error ->
+                    _uiState.update { state ->
+                        when (error) {
+                            is AuthError.InvalidCredentials,
+                            is AuthError.UserNotFound -> {
+                                Log.w("LoginViewModel", "Credenciales inválidas")
+                                state.copy(
+                                    isLoading = false,
+                                    emailError = "Usuario o contraseña incorrectos",
+                                    passwordError = "Usuario o contraseña incorrectos"
+                                )
+                            }
+
+                            else -> {
+                                Log.e("LoginViewModel", "Error inesperado durante el login", error)
+                                state.copy(isLoading = false)
+                            }
+                        }
+                    }
+                }
+            )
         }
     }
 
     /**
-     * Metodo que reinicia el estado de la ui.
+     * Reinicia el estado de la pantalla de login (campos vacíos y errores nulos).
      */
-    fun clearState(){
+    fun clearState() {
         _uiState.value = LoginState()
     }
+
 }
+

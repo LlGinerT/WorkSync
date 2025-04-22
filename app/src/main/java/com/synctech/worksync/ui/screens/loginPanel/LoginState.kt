@@ -12,7 +12,6 @@ package com.synctech.worksync.ui.screens.loginPanel
  * @property passwordError Mensaje de error asociado a la contraseña si no es válida, o `null` si es correcta.
  * @property isLoginEnabled Indica si el botón de inicio de sesión debe estar habilitado, en función de la validez del formulario.
  * @property isLoading Indica si se debe mostrar una pantalla de carga mientras se procesa el inicio de sesión.
- * @property loginSuccess Indica si el inicio de sesión se ha completado con éxito.
  */
 data class LoginState(
     val email: String = "",
@@ -21,5 +20,4 @@ data class LoginState(
     val passwordError: String? = null,
     val isLoginEnabled: Boolean = false,
     val isLoading: Boolean = false,
-    val loginSuccess: Boolean = false
 )
