@@ -3,9 +3,13 @@ package com.synctech.worksync.ui.session
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.synctech.worksync.domain.models.WorkerDomainModel
-import com.synctech.worksync.domain.useCases.SaveWorkSessionUseCase
-import com.synctech.worksync.ui.models.WorkerUiModel
+import com.synctech.worksync.domain.exceptions.SessionError
+import com.synctech.worksync.domain.models.EmployeeDomainModel
+import com.synctech.worksync.domain.models.WorkSessionDomainModel
+import com.synctech.worksync.domain.useCases.RestoreWorkSessionUseCase
+import com.synctech.worksync.domain.useCases.StartWorkSessionUseCase
+import com.synctech.worksync.domain.useCases.UpdateWorkSessionUseCase
+import com.synctech.worksync.ui.models.EmployeeUiModel
 import com.synctech.worksync.ui.models.toUi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -14,9 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.UUID
 
 /**
  * ViewModel compartido que gestiona la sesión activa del usuario autenticado.
@@ -26,16 +28,22 @@ import java.util.Locale
  * - Inicia y gestiona un cronómetro que cuenta los segundos trabajados.
  * - Guarda una sesión de trabajo al cerrar sesión.
  *
- * @property saveWorkSessionUseCase Caso de uso para guardar una sesión de trabajo al finalizar.
+ * @property updateWorkSessionUseCase Caso de uso para guardar una sesión de trabajo al finalizar.
  */
 class SessionViewModel(
-    private val saveWorkSessionUseCase: SaveWorkSessionUseCase
+    private val startWorkSessionUseCase: StartWorkSessionUseCase,
+    private val restoreWorkSessionUseCase: RestoreWorkSessionUseCase,
+    private val updateWorkSessionUseCase: UpdateWorkSessionUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SessionState())
     val state: StateFlow<SessionState> = _state.asStateFlow()
 
-    val uiWorker: WorkerUiModel? get() = _state.value.domainWorker?.toUi()
+    val currentUser: EmployeeDomainModel? get() = _state.value.employee
+    val uiEmployee: EmployeeUiModel? get() = _state.value.employee?.toUi()
+    val isLoggedIn: Boolean get() = _state.value.employee != null
+    val isAdmin: Boolean get() = _state.value.employee?.isAdmin == true
+
 
     // Job que representa la corutina activa del cronómetro
     private var timerJob: Job? = null
@@ -51,7 +59,6 @@ class SessionViewModel(
                 _state.value = _state.value.copy(
                     secondsWorked = _state.value.secondsWorked + 1
                 )
-                Log.i("SessionViewModel", "Crono: ${getFormattedWorkedTime()}")
             }
         }
     }
@@ -63,80 +70,105 @@ class SessionViewModel(
         timerJob?.cancel()
     }
 
-    /**
-     * Establece el trabajador autenticado en sesión, almacena el tiempo de inicio
-     * y comienza el cronómetro.
-     *
-     * @param workerDomainModel Modelo del trabajador.
-     */
-    fun setWorker(workerDomainModel: WorkerDomainModel) {
-        _state.value = _state.value.copy(
-            domainWorker = workerDomainModel,
-            sessionStart = System.currentTimeMillis(),
-            secondsWorked = 0
+    private fun restoreSession(user: EmployeeDomainModel, session: WorkSessionDomainModel) {
+        val elapsedSeconds = ((System.currentTimeMillis() - session.startTime) / 1000).toInt()
+
+        _state.value = SessionState(
+            employee = user, sessionStart = session.startTime, secondsWorked = elapsedSeconds
         )
+
         startTimer()
-        Log.d("SessionViewModel","TimeStamp: ${getFormattedStartedSession()}")
     }
 
+
     /**
-     * Finaliza la sesión del usuario:
-     * - Detiene el cronómetro.
-     * - Guarda la sesión de trabajo mediante el caso de uso.
-     * - Limpia el estado del ViewModel.
+     * Inicia una nueva sesión de trabajo o restaura una sesión anterior si existe.
+     *
+     * Este método se llama al hacer login. Verifica si ya hay una sesión activa
+     * en curso (sin `endTime`) para restaurarla. Si no la hay, inicia una nueva sesión
+     * y la guarda a través del caso de uso [StartWorkSessionUseCase].
+     *
+     * @param user Usuario autenticado.
+     * @return [Result.success] si se restauró o inició sesión correctamente, o [Result.failure] si falló.
      */
-    fun logout() {
-        val end = System.currentTimeMillis()
-        val start = _state.value.sessionStart
-        val user = _state.value.domainWorker
-        if (user != null && start != null) {
-            viewModelScope.launch {
-                try {
-                    saveWorkSessionUseCase(user.userId, start, end)
-                    Log.i("SessionViewModel","Sesion guardada en ViewModel.")
-                } catch (e: Exception) {
-                    Log.e("SessionViewModel", "Error al guardar la sesión de trabajo", e)
+    suspend fun login(user: EmployeeDomainModel): Result<Unit> {
+        val restoreResult = restoreWorkSessionUseCase(user.userId)
+
+        return restoreResult.fold(onSuccess = { session ->
+            if (session != null) {
+                restoreSession(user, session)
+                Log.i(
+                    "SessionViewModel", "Sesión restaurada automáticamente para ${user.userId}"
+                )
+                Result.success(Unit)
+            } else {
+                val start = System.currentTimeMillis()
+
+                val result = startWorkSessionUseCase(user.userId, start)
+
+                result.onSuccess {
+                    _state.value = SessionState(
+                        employee = user, sessionStart = start, secondsWorked = 0
+                    )
+                    Log.i(
+                        "SessionViewModel", "Sesión iniciada correctamente para ${user.userId}"
+                    )
+                    startTimer()
+                }.onFailure { error ->
+                    Log.e("SessionViewModel", "Error al iniciar sesión", error)
                 }
+
+                result
             }
-        } else {
-            Log.w(
-                "SessionViewModel",
-                "No se pudo guardar la sesión: datos incompletos (user=$user, start=$start)"
-            )
-            // TODO: Implentar sistema de pila para intentarlo mas adelante.
+        }, onFailure = { error ->
+            Log.e("SessionViewModel", "Error al restaurar sesión", error)
+            Result.failure(error)
+        })
+    }
+
+
+    /**
+     * Finaliza la sesión de trabajo activa.
+     *
+     * Este método:
+     * - Detiene el cronómetro
+     * - Guarda la sesión en el repositorio (Firebase en producción)
+     * - Limpia el estado de sesión si la operación fue exitosa
+     *
+     * @return [Result.success] si se guardó correctamente, o [Result.failure] con [SessionError] si falló.
+     */
+    suspend fun logout(): Result<Unit> {
+        val user = _state.value.employee
+        val start = _state.value.sessionStart
+        val end = System.currentTimeMillis()
+
+        if (user == null || start == null) {
+            Log.w("SessionViewModel", "Logout cancelado: no hay sesión activa")
+            return Result.failure(SessionError.IncompleteSession)
         }
 
         stopTimer()
+
+        // TODO: Cuando usemos firebase aquí se usara el ID original de la sesión
+        val sessionId = UUID.randomUUID().toString()
+
+        val result = updateWorkSessionUseCase(
+            sessionId = sessionId, userId = user.userId, sessionStart = start, sessionEnd = end
+        )
+
+        return result.fold(onSuccess = {
+            Log.i("SessionViewModel", "Sesión guardada correctamente")
+            clearSessionState()
+            Result.success(Unit)
+        }, onFailure = { error ->
+            Log.e("SessionViewModel", "Error al guardar sesión", error)
+            Result.failure(error)
+        })
+    }
+
+
+    private fun clearSessionState() {
+        stopTimer()
         _state.value = SessionState() //Función recursiva que reinicia el estado completo
-    }
-
-    /**
-     *  Devuelve el tiempo trabajado formateado.
-     *
-     *  @return Tiempo trabajado en formato HH:MM:SS
-     */
-    fun getFormattedWorkedTime(): String {
-        val totalSeconds = _state.value.secondsWorked
-        val hours = totalSeconds / 3600
-        val minutes = (totalSeconds % 3600) / 60
-        val seconds = totalSeconds % 60
-
-        return "%02d:%02d:%02d".format(hours, minutes, seconds)
-    }
-
-    /**
-     * Devuelve el TimeStamp formateado
-     *
-     * @return TimeStamp con formato:dd/MM/yyyy HH:mm o TimeStamp no disponible
-     */
-    fun getFormattedStartedSession(): String {
-        val sessionStartInMillis = _state.value.sessionStart
-        if (sessionStartInMillis != null) {
-            val date = Date(sessionStartInMillis)
-            val format = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-            return format.format(date)
-        } else {
-            return "TimeStamp no disponible"
-        }
     }
 }

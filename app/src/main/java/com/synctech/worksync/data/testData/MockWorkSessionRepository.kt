@@ -10,7 +10,17 @@ class MockWorkSessionRepository : WorkSessionRepository {
         sessionList.add(session)
     }
 
-    override suspend fun getWorkSessionsByUser(userId: String): List<WorkSessionDomainModel> {
+    override suspend fun getWorkSession(userId: String): List<WorkSessionDomainModel> {
         return sessionList.filter { it.userId == userId }
+    }
+
+    override suspend fun updateWorkSession(session: WorkSessionDomainModel): Boolean {
+        val index = sessionList.indexOfFirst { it.sessionId == session.sessionId }
+        return if (index != -1) {
+            sessionList[index] = session
+            true
+        } else {
+            false
+        }
     }
 }
