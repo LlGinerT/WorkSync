@@ -23,8 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.synctech.worksync.ui.session.SessionViewModel
-import com.synctech.worksync.ui.uiUtils.formatTimestamp
-import com.synctech.worksync.ui.uiUtils.formatWorkedTime
+import com.synctech.worksync.ui.uiUtils.secondsToTimeString
+import com.synctech.worksync.ui.uiUtils.timestampToString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,8 +33,8 @@ import kotlinx.coroutines.launch
 fun UserPanelScreen(sessionViewModel: SessionViewModel) {
     val user = sessionViewModel.uiEmployee
     val uiState by sessionViewModel.state.collectAsState()
-    val timeWorked = formatWorkedTime(uiState.secondsWorked)
-    val startTimeStamp = formatTimestamp(uiState.sessionStart)
+    val timeWorked = secondsToTimeString(uiState.secondsWorked)
+    val startTimeStamp = timestampToString(uiState.sessionStart)
 
     Column(
         modifier = Modifier
