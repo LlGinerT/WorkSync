@@ -1,38 +1,46 @@
 package com.synctech.worksync.domain.useCases
 
-import com.synctech.worksync.domain.models.WorkerDomainModel
+import com.synctech.worksync.domain.exceptions.AuthError
+import com.synctech.worksync.domain.models.EmployeeDomainModel
+import com.synctech.worksync.domain.repositories.EmployeesRepository
 import com.synctech.worksync.domain.repositories.UserAuthRepository
-import com.synctech.worksync.domain.repositories.WorkersRepository
 
 /**
- * Caso de uso que gestiona la autenticación de usuarios y recupera su información de perfil.
+ * Caso de uso que autentica al usuario y recupera su perfil si las credenciales son válidas.
  *
- * @property userAuthRepository Repositorio de autenticación de usuarios.
- * @property workersRepository Repositorio de datos de los trabajadores.
+ * Este caso de uso:
+ * - Valida el email y contraseña en el repositorio de autenticación
+ * - Recupera el modelo del trabajador desde el repositorio de empleados
+ * - Devuelve un [Result] con el trabajador o un error de tipo [AuthError]
+ *
+ * @property userAuthRepository Repositorio que gestiona la autenticación de credenciales.
+ * @property employeesRepository Repositorio que contiene los datos de los trabajadores.
  */
 class AuthUserUseCase(
     private val userAuthRepository: UserAuthRepository,
-    private val workersRepository: WorkersRepository
+    private val employeesRepository: EmployeesRepository
 ) {
-    /**
-     * Ejecuta el caso de uso de autenticación.
-     *
-     * @param email Correo electrónico del usuario.
-     * @param password Contraseña del usuario.
-     * @return El perfil del trabajador si la autenticación es exitosa, o `null` si falla.
-     */
-    operator fun invoke(email: String, password: String): WorkerDomainModel? {
-        val userId = userAuthRepository.authUser(email, password)
-        return userId?.let { workersRepository.getWorker(it) }
-    }
 
     /**
-     * Función auxiliar para comprobar que el email existe en el repository
+     * Ejecuta la autenticación.
      *
-     * @param email Correo electrónico del usuario.
-     * @return Bolean si existe o no.
+     * @param email Correo del usuario.
+     * @param password Contraseña del usuario.
+     * @return [Result.success] con el empleado si las credenciales son correctas,
+     *         o [Result.failure] con [AuthError] si algo falla.
      */
-    fun checkIfEmailExists(email: String): Boolean {
-        return userAuthRepository.findUserIdByEmail(email) != null
+    suspend operator fun invoke(email: String, password: String): Result<EmployeeDomainModel> {
+        return try {
+            val userId = userAuthRepository.authUser(email, password) ?: return Result.failure(
+                AuthError.InvalidCredentials
+            )
+
+            val employee = employeesRepository.getWorker(userId)
+                ?: return Result.failure(AuthError.UserNotFound)
+
+            Result.success(employee)
+        } catch (e: Exception) {
+            Result.failure(AuthError.Unknown(e))
+        }
     }
 }

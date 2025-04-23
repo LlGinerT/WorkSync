@@ -1,6 +1,7 @@
 package com.synctech.worksync.ui.screens.userPanel
 
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,22 +16,25 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.synctech.worksync.data.testData.MockWorkSessionRepository
-import com.synctech.worksync.domain.useCases.SaveWorkSessionUseCase
 import com.synctech.worksync.ui.session.SessionViewModel
-import com.synctech.worksync.ui.theme.WorkSyncTheme
+import com.synctech.worksync.ui.uiUtils.formatTimestamp
+import com.synctech.worksync.ui.uiUtils.formatWorkedTime
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun UserPanelScreen(sessionViewModel: SessionViewModel) {
-
-    val worker = sessionViewModel.uiWorker
-    val timeWorked = sessionViewModel.getFormattedWorkedTime()
-    val startTimeStamp = sessionViewModel.getFormattedStartedSession()
+    val user = sessionViewModel.uiEmployee
+    val uiState by sessionViewModel.state.collectAsState()
+    val timeWorked = formatWorkedTime(uiState.secondsWorked)
+    val startTimeStamp = formatTimestamp(uiState.sessionStart)
 
     Column(
         modifier = Modifier
@@ -38,48 +42,52 @@ fun UserPanelScreen(sessionViewModel: SessionViewModel) {
             .padding(16.dp)
             .background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.Start,
-
-        ) {
-        worker?.let {
+        horizontalAlignment = Alignment.Start
+    ) {
+        user?.let {
             Text("Nombre: ${it.name}", color = MaterialTheme.colorScheme.onBackground)
             Spacer(modifier = Modifier.height(8.dp))
             Text("Rol: ${it.category}", color = MaterialTheme.colorScheme.onBackground)
         } ?: Text("Usuario no cargado")
+
         Spacer(modifier = Modifier.height(8.dp))
+
         Text("Inicio jornada: $startTimeStamp", color = MaterialTheme.colorScheme.onBackground)
+
         Spacer(modifier = Modifier.height(8.dp))
-        Row(modifier = Modifier.fillMaxWidth(), Arrangement.Center) {
+
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             Text(
                 text = timeWorked,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 45.sp
             )
         }
+
         Spacer(modifier = Modifier.height(8.dp))
-        Row(modifier = Modifier.fillMaxWidth(), Arrangement.Center) {
+
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             Button(
-                onClick = { sessionViewModel.logout() },
+                onClick = {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val result = sessionViewModel.logout()
+                        result.onSuccess {
+                            Log.i("UserPanelScreen", "Sesión finalizada correctamente")
+                            // TODO: Navegar a LoginScreen
+                        }.onFailure {
+                            Log.e("UserPanelScreen", "Error al cerrar sesión", it)
+                            // TODO: Mostrar snackbar o alerta
+                        }
+                    }
+                },
                 modifier = Modifier
                     .height(48.dp)
                     .width(320.dp)
             ) {
-                Text("Cerrar Sesion", style = MaterialTheme.typography.labelLarge)
+                Text("Cerrar Sesión", style = MaterialTheme.typography.labelLarge)
             }
         }
     }
 }
 
 
-@Preview
-@Composable
-fun UserPanelPreview() {
-
-    val repository = MockWorkSessionRepository()
-    val useCase = SaveWorkSessionUseCase(repository)
-    val viewModel = SessionViewModel(useCase)
-
-    WorkSyncTheme {
-        UserPanelScreen(viewModel)
-    }
-}
