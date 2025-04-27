@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.synctech.worksync.R
@@ -147,7 +148,7 @@ private fun JobDetailContent(
             ) {
                 Icon(Icons.Filled.LocationOn, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Ver en Google Maps")
+                Text("Google Maps")
             }
 
             Image(
