@@ -18,11 +18,13 @@ import com.synctech.worksync.domain.repositories.UserAuthRepository
  */
 class AuthUserUseCase(
     private val userAuthRepository: UserAuthRepository,
-    private val employeesRepository: EmployeesRepository
+    private val employeesRepository: EmployeesRepository,
+    private val restoreWorkSessionUseCase: RestoreWorkSessionUseCase,
+    private val startWorkSessionUseCase: StartWorkSessionUseCase
 ) {
 
     /**
-     * Ejecuta la autenticación.
+     * Ejecuta la autenticación, intenta restaurar una sesión activa o inicia una nueva.
      *
      * @param email Correo del usuario.
      * @param password Contraseña del usuario.
@@ -38,7 +40,21 @@ class AuthUserUseCase(
             val employee = employeesRepository.getWorker(userId)
                 ?: return Result.failure(AuthError.UserNotFound)
 
-            Result.success(employee)
+            val restoredSessionResult = restoreWorkSessionUseCase(userId)
+
+            restoredSessionResult.fold(
+                onSuccess = { session ->
+                    if (session == null) {
+                        // No hay sesión activa, se inicia una nueva
+                        startWorkSessionUseCase(
+                            userId = employee.userId,
+                            sessionStart = System.currentTimeMillis()
+                        )
+                    }
+                    Result.success(employee)
+                },
+                onFailure = { Result.failure(AuthError.Unknown(it)) }
+            )
         } catch (e: Exception) {
             Result.failure(AuthError.Unknown(e))
         }
