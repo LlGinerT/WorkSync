@@ -11,4 +11,17 @@ data class EmployeeDomainModel(
     val userId: String,
     val name: String,
     val isAdmin: Boolean,
-)
+) {
+    companion object {
+        /**
+         * Usuario especial del sistema utilizado para acciones automáticas o internas,
+         * como sincronización de datos o procesos de mantenimiento.
+         * Este usuario siempre tiene permisos administrativos.
+         */
+        val SYSTEM_USER = EmployeeDomainModel(
+            userId = "system",
+            name = "System",
+            isAdmin = true
+        )
+    }
+}

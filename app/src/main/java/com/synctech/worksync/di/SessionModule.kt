@@ -6,7 +6,7 @@ import com.synctech.worksync.data.testData.MockUserAuthRepository
 import com.synctech.worksync.data.testData.MockWorkSessionRepository
 import com.synctech.worksync.di.Qualifiers.activeSession
 import com.synctech.worksync.di.Qualifiers.authUser
-import com.synctech.worksync.di.Qualifiers.empMediator
+import com.synctech.worksync.di.Qualifiers.employeeMediator
 import com.synctech.worksync.di.Qualifiers.logout
 import com.synctech.worksync.di.Qualifiers.updateSession
 import com.synctech.worksync.di.Qualifiers.userAuthMock
@@ -50,7 +50,7 @@ val sessionModule = module {
     factory<AuthUserUseCase>(authUser) {
         AuthUserUseCase(
             userAuthRepository = get(userAuthMock),
-            employeesRepository = get(empMediator),
+            employeesRepository = get(employeeMediator),
             sessionRepository = get(workSessionMediator),
             sessionCache = get(activeSession)
         )

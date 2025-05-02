@@ -4,41 +4,42 @@ import com.synctech.worksync.domain.models.EmployeeDomainModel
 import com.synctech.worksync.domain.models.ItemsDomainModel
 
 /**
- * Repositorio que define las operaciones relacionadas con los materiales.
+ * Define las operaciones relacionadas con la gestión del inventario de materiales.
  */
 interface InventoryRepository {
 
     /**
-     * Obtiene la lista de materiales disponibles.
+     * Obtiene todos los materiales disponibles.
      *
-     * @return Lista de materiales.
+     * @return [Result] con la lista de materiales o un error en caso de fallo.
      */
-    suspend fun getItems(): List<ItemsDomainModel>
+    suspend fun getItems(): Result<List<ItemsDomainModel>>
 
     /**
-     * Agrega un itemsDomainModel al sistema.
+     * Añade un nuevo material al inventario.
      *
      * @param employee Usuario que realiza la acción.
-     * @param itemsDomainModel ItemsDomainModel a agregar.
-     * @return `true` si el itemsDomainModel se agregó correctamente, `false` en caso contrario.
+     * @param item Material a añadir.
+     * @return [Result] que indica éxito o error al añadir el material.
      */
-    suspend fun addItem(
-        employee: EmployeeDomainModel,
-        itemsDomainModel: ItemsDomainModel
-    ): Boolean
+    suspend fun addItem(employee: EmployeeDomainModel, item: ItemsDomainModel): Result<Boolean>
 
     /**
-     * Elimina un itemsDomainModel del sistema.
+     * Actualiza un material existente en el inventario.
      *
      * @param employee Usuario que realiza la acción.
-     * @param itemsDomainModel ItemsDomainModel a eliminar.
-     * @return `true` si el itemsDomainModel se eliminó correctamente, `false` en caso contrario.
+     * @param item Material actualizado.
+     * @return [Result] que indica éxito o error al actualizar.
      */
-    suspend fun removeItem(
-        employee: EmployeeDomainModel,
-        itemsDomainModel: ItemsDomainModel
-    ): Boolean
+    suspend fun updateItem(employee: EmployeeDomainModel, item: ItemsDomainModel): Result<Boolean>
 
-    //TODO
-    suspend fun updateItem()
+    /**
+     * Elimina un material del inventario.
+     *
+     * @param employee Usuario que realiza la acción.
+     * @param item Material a eliminar.
+     * @return [Result] que indica éxito o error al eliminar.
+     */
+    suspend fun removeItem(employee: EmployeeDomainModel, item: ItemsDomainModel): Result<Boolean>
 }
+

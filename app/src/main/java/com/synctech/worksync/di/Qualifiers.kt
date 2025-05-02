@@ -7,6 +7,11 @@ object Qualifiers {
     val workSessionMock = named("wsMock")
     val workSessionMediator = named("wsMediator")
 
+    // InventoryRepository
+    val inventoryMock = named("invMock")
+    val inventoryCache = named("invCache")
+    val inventoryMediator = named("invMediator")
+
     // UserAuthRepository
     val userAuthMock = named("uaMock")
 
@@ -14,9 +19,9 @@ object Qualifiers {
     val activeSession = named("activeSessionCache")
 
     // EmployeesRepository
-    val empMock = named("empMock")
-    val empCache = named("empCache")
-    val empMediator = named("empMediator")
+    val employeeMock = named("empMock")
+    val employeeCache = named("empCache")
+    val employeeMediator = named("empMediator")
 
     // UseCases
     val updateSession = named("updateSession")

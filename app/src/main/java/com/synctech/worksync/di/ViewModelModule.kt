@@ -2,8 +2,10 @@ package com.synctech.worksync.di
 
 import com.synctech.worksync.di.Qualifiers.activeSession
 import com.synctech.worksync.di.Qualifiers.authUser
+import com.synctech.worksync.di.Qualifiers.inventoryMediator
 import com.synctech.worksync.di.Qualifiers.logout
 import com.synctech.worksync.di.Qualifiers.updateSession
+import com.synctech.worksync.ui.screens.inventoryPanel.InventoryViewModel
 import com.synctech.worksync.ui.screens.loginPanel.LoginViewModel
 import com.synctech.worksync.ui.screens.userPanel.UserPanelViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -18,4 +20,5 @@ val viewModelModule = module {
             logoutUseCase = get(logout)
         )
     }
+    viewModel { InventoryViewModel(get(inventoryMediator)) }
 }
