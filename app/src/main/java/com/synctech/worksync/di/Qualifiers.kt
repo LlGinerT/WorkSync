@@ -19,8 +19,7 @@ object Qualifiers {
     val empMediator = named("empMediator")
 
     // UseCases
-    val startSession = named("startSession")
     val updateSession = named("updateSession")
-    val restoreSession = named("restoreSession")
     val authUser = named("authUser")
+    val logout = named("logout")
 }

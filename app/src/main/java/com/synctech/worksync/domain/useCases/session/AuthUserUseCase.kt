@@ -4,25 +4,30 @@ import android.util.Log
 import com.synctech.worksync.data.cache.CacheActiveSessionRepository
 import com.synctech.worksync.domain.exceptions.AuthError
 import com.synctech.worksync.domain.models.EmployeeDomainModel
+import com.synctech.worksync.domain.models.WorkSessionDomainModel
 import com.synctech.worksync.domain.repositories.EmployeesRepository
 import com.synctech.worksync.domain.repositories.UserAuthRepository
+import com.synctech.worksync.domain.repositories.WorkSessionRepository
+import java.util.UUID
 
 /**
- * Caso de uso que autentica al usuario y recupera su perfil si las credenciales son válidas.
+ * Caso de uso para autenticar credenciales y preparar el contexto de sesión activa.
  *
  * Este caso de uso:
- * - Valida el email y contraseña en el repositorio de autenticación
- * - Recupera el modelo del trabajador desde el repositorio de empleados
- * - Devuelve un [Result] con el trabajador o un error de tipo [AuthError]
+ * - Valida email y contraseña.
+ * - Recupera el modelo de empleado.
+ * - Inicia o restaura sesión de trabajo.
+ * - Guarda usuario y sesión en caché para su uso en otras pantallas.
  *
- * @property userAuthRepository Repositorio que gestiona la autenticación de credenciales.
- * @property employeesRepository Repositorio que contiene los datos de los trabajadores.
+ * @property userAuthRepository Repositorio que autentica al usuario.
+ * @property employeesRepository Repositorio que proporciona datos del empleado.
+ * @property sessionRepository Repositorio de sesiones que gestiona la creación y restauración.
+ * @property sessionCache Caché en memoria donde se almacena el contexto activo.
  */
 class AuthUserUseCase(
     private val userAuthRepository: UserAuthRepository,
     private val employeesRepository: EmployeesRepository,
-    private val restoreWorkSessionUseCase: RestoreWorkSessionUseCase,
-    private val startWorkSessionUseCase: StartWorkSessionUseCase,
+    private val sessionRepository: WorkSessionRepository,
     private val sessionCache: CacheActiveSessionRepository
 ) {
     suspend operator fun invoke(email: String, password: String): Result<EmployeeDomainModel> {
@@ -33,28 +38,36 @@ class AuthUserUseCase(
             val employee = employeesRepository.getEmployee(userId)
                 ?: return Result.failure(AuthError.UserNotFound)
 
-            sessionCache.setUser(employee) // guardamos el usuario actual
+            sessionCache.setUser(employee)
 
-            val restoredSessionResult = restoreWorkSessionUseCase(userId)
+            // Intenta restaurar sesión activa
+            val activeSession = sessionRepository
+                .getWorkSession(userId)
+                .filter { it.endTime == null }
+                .maxByOrNull { it.startTime }
 
-            restoredSessionResult.fold(
-                onSuccess = { session ->
-                    if (session != null) {
-                        sessionCache.setSession(session) // también cacheamos la sesión restaurada
-                        Log.i("AuthUseCase", "Sesión restaurada desde Firebase y cacheada")
-                    } else {
-                        val start = System.currentTimeMillis()
-                        startWorkSessionUseCase(userId, start)
-                        // el Mediator ya cacheará esta sesión automáticamente
-                        Log.i("AuthUseCase", "Nueva sesión iniciada y cacheada")
-                    }
+            if (activeSession != null) {
+                Log.i("AuthUseCase", "Sesión restaurada desde repositorio")
+                sessionCache.setSession(activeSession)
+            } else {
+                // Inicia una nueva
+                val newSession = WorkSessionDomainModel(
+                    sessionId = UUID.randomUUID().toString(),
+                    userId = userId,
+                    startTime = System.currentTimeMillis(),
+                    endTime = null,
+                    durationInSeconds = null
+                )
+                sessionRepository.saveWorkSession(newSession)
+                sessionCache.setSession(newSession)
+                Log.i("AuthUseCase", "Sesión iniciada y cacheada")
+            }
 
-                    Result.success(employee)
-                },
-                onFailure = { Result.failure(AuthError.Unknown(it)) }
-            )
+            Result.success(employee)
         } catch (e: Exception) {
+            Log.e("AuthUseCase", "Error inesperado", e)
             Result.failure(AuthError.Unknown(e))
         }
     }
 }
+

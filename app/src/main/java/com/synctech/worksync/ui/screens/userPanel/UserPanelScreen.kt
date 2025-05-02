@@ -1,7 +1,6 @@
 package com.synctech.worksync.ui.screens.userPanel
 
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -82,14 +81,7 @@ fun UserPanelScreen(onLogoutSuccess: () -> Unit, viewModel: UserPanelViewModel) 
             Button(
                 onClick = {
                     CoroutineScope(Dispatchers.Main).launch {
-                        val result = viewModel.logout()
-                        result.onSuccess {
-                            Log.i("UserPanelScreen", "Sesión finalizada correctamente")
-                            onLogoutSuccess()
-                        }.onFailure {
-                            Log.e("UserPanelScreen", "Error al cerrar sesión", it)
-                            // TODO: Mostrar snackbar o alerta
-                        }
+                        viewModel.logout()
                     }
                 }, enabled = !uiState.isLoggingOut, modifier = Modifier
                     .height(48.dp)

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synctech.worksync.data.cache.CacheActiveSessionRepository
+import com.synctech.worksync.domain.useCases.session.LogoutUseCase
 import com.synctech.worksync.domain.useCases.session.UpdateWorkSessionUseCase
 import com.synctech.worksync.ui.models.toUi
 import kotlinx.coroutines.Job
@@ -31,6 +32,7 @@ import kotlinx.coroutines.launch
 class UserPanelViewModel(
     private val cache: CacheActiveSessionRepository,
     private val updateWorkSessionUseCase: UpdateWorkSessionUseCase,
+    private val logoutUseCase: LogoutUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UserPanelState())
@@ -94,38 +96,19 @@ class UserPanelViewModel(
      * - Limpia la caché y el estado.
      * - Emite evento para navegación o UI.
      */
-    suspend fun logout(): Result<Unit> {
-        val sessionContext = cache.getActiveSessionContext()
-        val user = sessionContext.user
-        val session = sessionContext.session
-
-        if (user == null || session == null) {
-            Log.w("UserPanelViewModel", "Logout fallido: datos no disponibles")
-            return Result.failure(Exception("Error al cerrar sesión: sesión inválida"))
-        }
-
-        Log.i("UserPanelViewModel", "Cerrando sesión para usuario ${user.userId}")
+    suspend fun logout() {
         _uiState.update { it.copy(isLoggingOut = true) }
 
-        val result = updateWorkSessionUseCase(
-            userId = user.userId,
-            sessionId = session.sessionId,
-            sessionStart = session.startTime,
-            sessionEnd = System.currentTimeMillis()
-        )
+        val result = logoutUseCase()
 
         if (result.isSuccess) {
-            Log.i("UserPanelViewModel", "Sesión guardada correctamente, limpiando caché")
             stopTimer()
-            cache.clearAll()
-            _uiState.value = UserPanelState() // Restablece el estado por completo
+            _uiState.value = UserPanelState()
             _eventFlow.emit(UserPanelUiEvent.LogoutSuccess)
         } else {
-            Log.e("UserPanelViewModel", "Error al guardar sesión al cerrar")
             _uiState.update { it.copy(isLoggingOut = false) }
+            Log.e("UserPanelViewModel", "Error al cerrar sesión", result.exceptionOrNull())
         }
-
-        return result
     }
 
     override fun onCleared() {
