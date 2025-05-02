@@ -1,4 +1,4 @@
-package com.synctech.worksync.domain.navigation
+package com.synctech.worksync.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
@@ -26,7 +26,7 @@ fun AppNavHost() {
         composable("panel") {
             val userPanelViewModel = koinViewModel<UserPanelViewModel>()
             UserPanelScreen(
-                onLogout = {
+                onLogoutSuccess = {
                     navController.navigate("login") {
                         popUpTo("login") { inclusive = true }
                     }

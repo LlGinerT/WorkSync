@@ -2,13 +2,13 @@ package com.synctech.worksync.data
 
 
 import android.util.Log
-import com.synctech.worksync.data.cache.CacheUserSessionRepository
+import com.synctech.worksync.data.cache.CacheActiveSessionRepository
 import com.synctech.worksync.domain.models.WorkSessionDomainModel
 import com.synctech.worksync.domain.repositories.WorkSessionRepository
 
 class WorkSessionMediator(
     private val remote: WorkSessionRepository,
-    private val sessionCache: CacheUserSessionRepository
+    private val sessionCache: CacheActiveSessionRepository
 ) : WorkSessionRepository {
 
     override suspend fun saveWorkSession(session: WorkSessionDomainModel) {

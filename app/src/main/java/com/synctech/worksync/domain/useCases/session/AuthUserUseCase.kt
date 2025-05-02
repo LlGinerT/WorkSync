@@ -1,7 +1,7 @@
-package com.synctech.worksync.domain.useCases
+package com.synctech.worksync.domain.useCases.session
 
 import android.util.Log
-import com.synctech.worksync.data.cache.CacheUserSessionRepository
+import com.synctech.worksync.data.cache.CacheActiveSessionRepository
 import com.synctech.worksync.domain.exceptions.AuthError
 import com.synctech.worksync.domain.models.EmployeeDomainModel
 import com.synctech.worksync.domain.repositories.EmployeesRepository
@@ -23,7 +23,7 @@ class AuthUserUseCase(
     private val employeesRepository: EmployeesRepository,
     private val restoreWorkSessionUseCase: RestoreWorkSessionUseCase,
     private val startWorkSessionUseCase: StartWorkSessionUseCase,
-    private val sessionCache: CacheUserSessionRepository
+    private val sessionCache: CacheActiveSessionRepository
 ) {
     suspend operator fun invoke(email: String, password: String): Result<EmployeeDomainModel> {
         return try {

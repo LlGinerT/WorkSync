@@ -1,4 +1,4 @@
-package com.synctech.worksync.domain.navigation
+package com.synctech.worksync.ui.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

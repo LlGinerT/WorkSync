@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synctech.worksync.domain.exceptions.AuthError
-import com.synctech.worksync.domain.useCases.AuthUserUseCase
+import com.synctech.worksync.domain.useCases.session.AuthUserUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -79,39 +79,37 @@ class LoginViewModel(
         viewModelScope.launch {
             val result = authUserUseCase(email, password)
 
-            result.fold(
-                onSuccess = { user ->
-                    _uiState.update { it.copy(isLoading = false) }
-                    Log.i("LoginViewModel", "Inicio de sesión exitoso para ${user.userId}")
-                    _eventFlow.emit(LoginUiEvent.LoginSuccess)
+            result.fold(onSuccess = { user ->
+                _uiState.update { it.copy(isLoading = false) }
+                Log.i("LoginViewModel", "Inicio de sesión exitoso para ${user.userId}")
+                _eventFlow.emit(LoginUiEvent.LoginSuccess)
+                clearState()
 
-                }, onFailure = { error ->
-                    _uiState.update { state ->
-                        when (error) {
-                            is AuthError.InvalidCredentials,
-                            is AuthError.UserNotFound -> {
-                                Log.w("LoginViewModel", "Credenciales inválidas")
-                                state.copy(
-                                    isLoading = false,
-                                    errorMessage = "Usuario o contraseña incorrectos",
-                                )
-                            }
+            }, onFailure = { error ->
+                _uiState.update { state ->
+                    when (error) {
+                        is AuthError.InvalidCredentials, is AuthError.UserNotFound -> {
+                            Log.w("LoginViewModel", "Credenciales inválidas")
+                            state.copy(
+                                isLoading = false,
+                                errorMessage = "Usuario o contraseña incorrectos",
+                            )
+                        }
 
-                            else -> {
-                                Log.e("LoginViewModel", "Error inesperado durante el login", error)
-                                state.copy(isLoading = false)
-                            }
+                        else -> {
+                            Log.e("LoginViewModel", "Error inesperado durante el login", error)
+                            state.copy(isLoading = false)
                         }
                     }
                 }
-            )
+            })
         }
     }
 
     /**
      * Reinicia el estado de la pantalla de login (campos vacíos y errores nulos).
      */
-    fun clearState() {
+    private fun clearState() {
         _uiState.value = LoginState()
     }
 

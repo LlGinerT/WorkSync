@@ -4,7 +4,7 @@ package com.synctech.worksync.ui.screens.jobsPanel
 //import androidx.lifecycle.ViewModel
 //import androidx.lifecycle.viewModelScope
 //import com.synctech.worksync.domain.models.EmployeeDomainModel
-//import com.synctech.worksync.domain.useCases.GetJobsUseCase
+//import com.synctech.worksync.domain.useCases.jobs.GetJobsUseCase
 //import com.synctech.worksync.ui.models.toUi
 //import com.synctech.worksync.ui.session.SessionViewModel
 //import kotlinx.coroutines.Dispatchers

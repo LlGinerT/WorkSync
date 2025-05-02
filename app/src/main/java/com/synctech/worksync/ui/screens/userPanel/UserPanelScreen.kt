@@ -18,6 +18,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -31,11 +32,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun UserPanelScreen(onLogout: () -> Unit, viewModel: UserPanelViewModel) {
+fun UserPanelScreen(onLogoutSuccess: () -> Unit, viewModel: UserPanelViewModel) {
     val uiState by viewModel.uiState.collectAsState()
     val user = uiState.employee
     val timeWorked = secondsToTimeString(uiState.secondsWorked)
     val startTimeStamp = timestampToString(uiState.workSession?.startTime ?: 0)
+
+    LaunchedEffect(Unit) {
+        viewModel.eventFlow.collect { event ->
+            when (event) {
+                is UserPanelUiEvent.LogoutSuccess -> {
+                    onLogoutSuccess()
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -59,7 +70,9 @@ fun UserPanelScreen(onLogout: () -> Unit, viewModel: UserPanelViewModel) {
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             Text(
-                text = timeWorked, color = MaterialTheme.colorScheme.onBackground, fontSize = 45.sp
+                text = timeWorked,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 45.sp
             )
         }
 
@@ -72,7 +85,7 @@ fun UserPanelScreen(onLogout: () -> Unit, viewModel: UserPanelViewModel) {
                         val result = viewModel.logout()
                         result.onSuccess {
                             Log.i("UserPanelScreen", "Sesión finalizada correctamente")
-                            onLogout()
+                            onLogoutSuccess()
                         }.onFailure {
                             Log.e("UserPanelScreen", "Error al cerrar sesión", it)
                             // TODO: Mostrar snackbar o alerta

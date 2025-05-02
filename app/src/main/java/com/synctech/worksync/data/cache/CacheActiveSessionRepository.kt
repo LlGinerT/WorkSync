@@ -1,9 +1,10 @@
 package com.synctech.worksync.data.cache
 
+import com.synctech.worksync.domain.models.ActiveSessionContext
 import com.synctech.worksync.domain.models.EmployeeDomainModel
 import com.synctech.worksync.domain.models.WorkSessionDomainModel
 
-class CacheUserSessionRepository {
+class CacheActiveSessionRepository {
 
     private var currentUser: EmployeeDomainModel? = null
     private var activeSession: WorkSessionDomainModel? = null
@@ -32,6 +33,9 @@ class CacheUserSessionRepository {
         clearUser()
         clearSession()
     }
+
+    fun getActiveSessionContext(): ActiveSessionContext =
+        ActiveSessionContext(user = currentUser, session = activeSession)
 }
 
 

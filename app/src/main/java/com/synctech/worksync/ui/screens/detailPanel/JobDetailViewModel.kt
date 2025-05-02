@@ -3,7 +3,7 @@ package com.synctech.worksync.ui.screens.detailPanel
 //import android.util.Log
 //import androidx.lifecycle.ViewModel
 //import com.synctech.worksync.domain.exceptions.JobsError
-//import com.synctech.worksync.domain.useCases.GetJobByIdUseCase
+//import com.synctech.worksync.domain.useCases.jobs.GetJobByIdUseCase
 //import com.synctech.worksync.ui.models.toUi
 //import com.synctech.worksync.ui.session.SessionViewModel
 //import kotlinx.coroutines.flow.MutableStateFlow

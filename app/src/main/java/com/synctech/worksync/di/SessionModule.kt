@@ -1,75 +1,65 @@
 package com.synctech.worksync.di
 
 import com.synctech.worksync.data.WorkSessionMediator
-import com.synctech.worksync.data.cache.CacheUserSessionRepository
+import com.synctech.worksync.data.cache.CacheActiveSessionRepository
 import com.synctech.worksync.data.testData.MockUserAuthRepository
 import com.synctech.worksync.data.testData.MockWorkSessionRepository
+import com.synctech.worksync.di.Qualifiers.activeSession
+import com.synctech.worksync.di.Qualifiers.authUser
+import com.synctech.worksync.di.Qualifiers.empMediator
+import com.synctech.worksync.di.Qualifiers.restoreSession
+import com.synctech.worksync.di.Qualifiers.startSession
+import com.synctech.worksync.di.Qualifiers.updateSession
+import com.synctech.worksync.di.Qualifiers.userAuthMock
+import com.synctech.worksync.di.Qualifiers.workSessionMediator
+import com.synctech.worksync.di.Qualifiers.workSessionMock
 import com.synctech.worksync.domain.repositories.UserAuthRepository
 import com.synctech.worksync.domain.repositories.WorkSessionRepository
-import com.synctech.worksync.domain.useCases.AuthUserUseCase
-import com.synctech.worksync.domain.useCases.GetActiveSessionUseCase
-import com.synctech.worksync.domain.useCases.RestoreWorkSessionUseCase
-import com.synctech.worksync.domain.useCases.StartWorkSessionUseCase
-import com.synctech.worksync.domain.useCases.UpdateWorkSessionUseCase
-import org.koin.core.qualifier.named
+import com.synctech.worksync.domain.useCases.session.AuthUserUseCase
+import com.synctech.worksync.domain.useCases.session.RestoreWorkSessionUseCase
+import com.synctech.worksync.domain.useCases.session.StartWorkSessionUseCase
+import com.synctech.worksync.domain.useCases.session.UpdateWorkSessionUseCase
 import org.koin.dsl.module
 
 val sessionModule = module {
 
     // Cache de sesión activa
-    single<CacheUserSessionRepository>(named("cache")) { CacheUserSessionRepository() }
+    single<CacheActiveSessionRepository>(activeSession) { CacheActiveSessionRepository() }
 
     // Repos
-    single<WorkSessionRepository>(named("mock")) { MockWorkSessionRepository() }
-    single<UserAuthRepository>(named("mock")) { MockUserAuthRepository() }
+    single<WorkSessionRepository>(workSessionMock) { MockWorkSessionRepository() }
+    single<UserAuthRepository>(userAuthMock) { MockUserAuthRepository() }
 
     // Mediator
-    single<WorkSessionRepository>(named("mediator")) {
+    single<WorkSessionRepository>(workSessionMediator) {
         WorkSessionMediator(
-            remote = get(named("mock")), sessionCache = get(named("cache"))
+            remote = get(workSessionMock), sessionCache = get(activeSession)
         )
     }
 
     // UseCases
-    factory<StartWorkSessionUseCase>(named("StartWorkSession")) {
+    factory<StartWorkSessionUseCase>(startSession) {
         StartWorkSessionUseCase(
-            get(
-                named(
-                    "mediator"
-                )
-            )
+            get(workSessionMediator)
         )
     }
-    factory<UpdateWorkSessionUseCase>(named("UpdateWorkSession")) {
+    factory<UpdateWorkSessionUseCase>(updateSession) {
         UpdateWorkSessionUseCase(
-            get(
-                named("mediator")
-            )
+            get(workSessionMediator)
         )
     }
-    factory<RestoreWorkSessionUseCase>(named("RestoreWorkSession")) {
+    factory<RestoreWorkSessionUseCase>(restoreSession) {
         RestoreWorkSessionUseCase(
-            get(
-                named("mediator")
-            )
+            get(workSessionMediator)
         )
     }
-    factory<GetActiveSessionUseCase>(named("GetActiveSession")) {
-        GetActiveSessionUseCase(
-            get(
-                named(
-                    "cache"
-                )
-            )
-        )
-    }
-    factory<AuthUserUseCase>(named("AuthUser")) {
+    factory<AuthUserUseCase>(authUser) {
         AuthUserUseCase(
-            userAuthRepository = get(named("mock")),
-            employeesRepository = get(named("mediator")),
-            restoreWorkSessionUseCase = get(named("RestoreWorkSession")),
-            startWorkSessionUseCase = get(named("StartWorkSession")),
-            sessionCache = get(named("cache"))
+            userAuthRepository = get(userAuthMock),
+            employeesRepository = get(empMediator),
+            restoreWorkSessionUseCase = get(restoreSession),
+            startWorkSessionUseCase = get(startSession),
+            sessionCache = get(activeSession)
         )
     }
 }

@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.synctech.worksync.domain.navigation.BottomNavItem
+import com.synctech.worksync.ui.navigation.BottomNavItem
 import com.synctech.worksync.ui.uiUtils.IconLibrary
 
 @Composable

@@ -1,4 +1,4 @@
-package com.synctech.worksync.domain.useCases
+package com.synctech.worksync.domain.useCases.jobs
 
 import android.util.Log
 import com.synctech.worksync.domain.models.EmployeeDomainModel

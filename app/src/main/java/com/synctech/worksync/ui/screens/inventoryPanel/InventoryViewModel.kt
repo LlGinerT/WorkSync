@@ -3,7 +3,7 @@ package com.synctech.worksync.ui.screens.inventoryPanel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.synctech.worksync.domain.useCases.GetInventoryUseCase
+import com.synctech.worksync.domain.useCases.inventory.GetInventoryUseCase
 import com.synctech.worksync.ui.models.toUi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

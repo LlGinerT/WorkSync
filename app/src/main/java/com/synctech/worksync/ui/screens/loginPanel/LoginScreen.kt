@@ -62,7 +62,6 @@ fun LoginScreen(
         viewModel.eventFlow.collect { event ->
             when (event) {
                 is LoginUiEvent.LoginSuccess -> {
-                    viewModel.clearState()
                     onLoginSuccess()
                 }
             }

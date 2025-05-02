@@ -1,18 +1,19 @@
 package com.synctech.worksync.di
 
+import com.synctech.worksync.di.Qualifiers.activeSession
+import com.synctech.worksync.di.Qualifiers.authUser
+import com.synctech.worksync.di.Qualifiers.updateSession
 import com.synctech.worksync.ui.screens.loginPanel.LoginViewModel
 import com.synctech.worksync.ui.screens.userPanel.UserPanelViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val viewModelModule = module {
-    viewModel { LoginViewModel(get(named("AuthUser"))) }
+    viewModel { LoginViewModel(get(authUser)) }
     viewModel {
         UserPanelViewModel(
-            cache = get(named("cache")),
-            updateWorkSessionUseCase = get(named("UpdateWorkSession")),
-            getActiveSessionUseCase = get(named("GetActiveSession"))
+            cache = get(activeSession),
+            updateWorkSessionUseCase = get(updateSession),
         )
     }
 }
