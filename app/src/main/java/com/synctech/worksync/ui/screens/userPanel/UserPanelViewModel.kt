@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 class UserPanelViewModel(
     private val cache: CacheUserSessionRepository,
     private val updateWorkSessionUseCase: UpdateWorkSessionUseCase,
-    private val getActiveSessionUseCase: GetActiveSessionUseCase
+    getActiveSessionUseCase: GetActiveSessionUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UserPanelState())
@@ -30,7 +30,6 @@ class UserPanelViewModel(
     private val sessionContext = getActiveSessionUseCase()
 
     init {
-        //TODO: transformar a useCases
         val user = sessionContext.user?.toUi()
         val session = sessionContext.session?.toUi()
 

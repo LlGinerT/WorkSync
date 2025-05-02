@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synctech.worksync.domain.exceptions.AuthError
-import com.synctech.worksync.domain.models.EmployeeDomainModel
 import com.synctech.worksync.domain.useCases.AuthUserUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +36,7 @@ class LoginViewModel(
      * @param email Nuevo valor introducido en el campo de email.
      */
     fun onEmailChanged(email: String) {
-        _uiState.update { it.copy(email = email, emailError = null) }
+        _uiState.update { it.copy(email = email, errorMessage = null) }
         updateLoginButtonState()
     }
 
@@ -47,7 +46,7 @@ class LoginViewModel(
      * @param password Nuevo valor introducido en el campo de contraseña.
      */
     fun onPasswordChanged(password: String) {
-        _uiState.update { it.copy(password = password, passwordError = null) }
+        _uiState.update { it.copy(password = password, errorMessage = null) }
         updateLoginButtonState()
     }
 
@@ -66,15 +65,14 @@ class LoginViewModel(
      *
      * @param onLoginConfirmed Lógica que se ejecuta si el usuario es válido (ej. sessionViewModel.login(user)).
      */
-    fun login(onLoginConfirmed: suspend (EmployeeDomainModel) -> Result<Unit>) {
+    fun login() {
         val email = _uiState.value.email
         val password = _uiState.value.password
 
         _uiState.update {
             it.copy(
                 isLoading = true,
-                emailError = null,
-                passwordError = null
+                errorMessage = null,
             )
         }
 
@@ -83,17 +81,11 @@ class LoginViewModel(
 
             result.fold(
                 onSuccess = { user ->
-                    val sessionResult = onLoginConfirmed(user)
-                    sessionResult.onSuccess {
-                        _uiState.update { it.copy(isLoading = false) }
-                        Log.i("LoginViewModel", "Inicio de sesión exitoso para ${user.userId}")
-                        _eventFlow.emit(LoginUiEvent.LoginSuccess)
-                    }.onFailure { error ->
-                        _uiState.update { it.copy(isLoading = false) }
-                        Log.e("LoginViewModel", "Error al iniciar sesión: ${error.message}", error)
-                    }
-                },
-                onFailure = { error ->
+                    _uiState.update { it.copy(isLoading = false) }
+                    Log.i("LoginViewModel", "Inicio de sesión exitoso para ${user.userId}")
+                    _eventFlow.emit(LoginUiEvent.LoginSuccess)
+
+                }, onFailure = { error ->
                     _uiState.update { state ->
                         when (error) {
                             is AuthError.InvalidCredentials,
@@ -101,8 +93,7 @@ class LoginViewModel(
                                 Log.w("LoginViewModel", "Credenciales inválidas")
                                 state.copy(
                                     isLoading = false,
-                                    emailError = "Usuario o contraseña incorrectos",
-                                    passwordError = "Usuario o contraseña incorrectos"
+                                    errorMessage = "Usuario o contraseña incorrectos",
                                 )
                             }
 

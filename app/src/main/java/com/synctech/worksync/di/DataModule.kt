@@ -9,18 +9,15 @@ import org.koin.dsl.module
 
 val dataModule = module {
 
-    //Repos
+    // Repositorios
     single<EmployeesRepository>(named("mock")) { MockEmployeesRepository() }
-    single { CacheEmployeesRepository() }
+    single<EmployeesRepository>(named("cache")) { CacheEmployeesRepository() }
 
-    // Mediator
-    single<EmployeesRepository> {
+    // Mediador
+    single<EmployeesRepository>(named("mediator")) {
         EmployeesMediator(
             remote = get(named("mock")),
-            cache = get()
+            cache = get(named("cache"))
         )
     }
-
-    single { get<EmployeesRepository>() as EmployeesMediator }
-
 }

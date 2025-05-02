@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import com.synctech.worksync.ui.components.AuthInputField
-import com.synctech.worksync.ui.session.SessionViewModel
 
 @Composable
 private fun LoginBackground(content: @Composable () -> Unit) {
@@ -51,18 +50,19 @@ private fun LoginBackground(content: @Composable () -> Unit) {
  */
 @Composable
 fun LoginScreen(
-    loginViewModel: LoginViewModel,
-    sessionViewModel: SessionViewModel,
     onLoginSuccess: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: LoginViewModel
 ) {
-    val state by loginViewModel.uiState.collectAsState()
+
+
+    val state by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-        loginViewModel.eventFlow.collect { event ->
+        viewModel.eventFlow.collect { event ->
             when (event) {
                 is LoginUiEvent.LoginSuccess -> {
-                    loginViewModel.clearState()
+                    viewModel.clearState()
                     onLoginSuccess()
                 }
             }
@@ -85,18 +85,18 @@ fun LoginScreen(
                     // esta sintaxis en onValueChange es un function reference, le pasa una función como
                     // parametro a otro componente
                     // seria lo mismo que = {loginViewModel.onPasswordChanged(it)} pero mas corto.
-                    onValueChange = loginViewModel::onEmailChanged,
+                    onValueChange = viewModel::onEmailChanged,
                     label = "Email",
-                    errorMessage = state.emailError
+                    errorMessage = state.errorMessage
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 AuthInputField(
                     value = state.password,
-                    onValueChange = loginViewModel::onPasswordChanged,
+                    onValueChange = viewModel::onPasswordChanged,
                     label = "Contraseña",
-                    errorMessage = state.passwordError,
+                    errorMessage = state.errorMessage,
                     isPassword = true
                 )
 
@@ -104,9 +104,7 @@ fun LoginScreen(
 
                 Button(
                     onClick = {
-                        loginViewModel.login { user ->
-                            sessionViewModel.login(user)
-                        }
+                        viewModel.login()
                     },
                     enabled = state.isLoginEnabled,
                     modifier = Modifier.fillMaxWidth()

@@ -31,8 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun UserPanelScreen(viewModel: UserPanelViewModel) {
-
+fun UserPanelScreen(onLogout: () -> Unit, viewModel: UserPanelViewModel) {
     val uiState by viewModel.uiState.collectAsState()
     val user = uiState.employee
     val timeWorked = secondsToTimeString(uiState.secondsWorked)
@@ -60,9 +59,7 @@ fun UserPanelScreen(viewModel: UserPanelViewModel) {
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             Text(
-                text = timeWorked,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 45.sp
+                text = timeWorked, color = MaterialTheme.colorScheme.onBackground, fontSize = 45.sp
             )
         }
 
@@ -81,9 +78,7 @@ fun UserPanelScreen(viewModel: UserPanelViewModel) {
                             // TODO: Mostrar snackbar o alerta
                         }
                     }
-                },
-                enabled = !uiState.isLoggingOut,
-                modifier = Modifier
+                }, enabled = !uiState.isLoggingOut, modifier = Modifier
                     .height(48.dp)
                     .width(320.dp)
             ) {

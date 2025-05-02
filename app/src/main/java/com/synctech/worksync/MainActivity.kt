@@ -3,7 +3,7 @@ package com.synctech.worksync
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.Text
+import com.synctech.worksync.domain.navigation.AppNavHost
 import com.synctech.worksync.ui.theme.WorkSyncTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,8 +13,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             WorkSyncTheme {
-                // Llamamos a la función que configura la navegación
-                Text("Probando Koin...")
+                AppNavHost()
             }
         }
     }
