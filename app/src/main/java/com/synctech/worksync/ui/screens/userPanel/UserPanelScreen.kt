@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.synctech.worksync.ui.session.SessionViewModel
 import com.synctech.worksync.ui.uiUtils.secondsToTimeString
 import com.synctech.worksync.ui.uiUtils.timestampToString
 import kotlinx.coroutines.CoroutineScope
@@ -30,11 +31,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun UserPanelScreen(sessionViewModel: SessionViewModel) {
-    val user = sessionViewModel.uiEmployee
-    val uiState by sessionViewModel.state.collectAsState()
+fun UserPanelScreen(viewModel: UserPanelViewModel) {
+
+    val uiState by viewModel.uiState.collectAsState()
+    val user = uiState.employee
     val timeWorked = secondsToTimeString(uiState.secondsWorked)
-    val startTimeStamp = timestampToString(uiState.sessionStart)
+    val startTimeStamp = timestampToString(uiState.workSession?.startTime ?: 0)
 
     Column(
         modifier = Modifier
@@ -70,7 +72,7 @@ fun UserPanelScreen(sessionViewModel: SessionViewModel) {
             Button(
                 onClick = {
                     CoroutineScope(Dispatchers.Main).launch {
-                        val result = sessionViewModel.logout()
+                        val result = viewModel.logout()
                         result.onSuccess {
                             Log.i("UserPanelScreen", "Sesión finalizada correctamente")
                             // TODO: Navegar a LoginScreen
@@ -80,12 +82,22 @@ fun UserPanelScreen(sessionViewModel: SessionViewModel) {
                         }
                     }
                 },
+                enabled = !uiState.isLoggingOut,
                 modifier = Modifier
                     .height(48.dp)
                     .width(320.dp)
             ) {
-                Text("Cerrar Sesión", style = MaterialTheme.typography.labelLarge)
+                if (uiState.isLoggingOut) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text("Cerrar Sesión", style = MaterialTheme.typography.labelLarge)
+                }
             }
+
         }
     }
 }

@@ -12,12 +12,14 @@ interface EmployeesRepository {
      * @param userId ID del trabajador.
      * @return El modelo del trabajador correspondiente.
      */
-    fun getWorker(userId: String): EmployeeDomainModel?
+    fun getEmployee(userId: String): EmployeeDomainModel?
 
     /**
      * Devuelve la lista de todos los trabajadores.
      *
      * @return Lista de trabajadores.
      */
-    fun getWorkersList(): List<EmployeeDomainModel> // Para que el admin pueda asignar los trabajos.
+    fun getEmployeeList(): List<EmployeeDomainModel> // Para que el admin pueda asignar los trabajos.
+
+    fun updateEmployeeList(list: List<EmployeeDomainModel>): Boolean
 }

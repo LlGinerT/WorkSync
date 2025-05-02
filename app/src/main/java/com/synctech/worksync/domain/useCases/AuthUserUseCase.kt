@@ -1,5 +1,7 @@
 package com.synctech.worksync.domain.useCases
 
+import android.util.Log
+import com.synctech.worksync.data.cache.CacheUserSessionRepository
 import com.synctech.worksync.domain.exceptions.AuthError
 import com.synctech.worksync.domain.models.EmployeeDomainModel
 import com.synctech.worksync.domain.repositories.EmployeesRepository
@@ -20,37 +22,33 @@ class AuthUserUseCase(
     private val userAuthRepository: UserAuthRepository,
     private val employeesRepository: EmployeesRepository,
     private val restoreWorkSessionUseCase: RestoreWorkSessionUseCase,
-    private val startWorkSessionUseCase: StartWorkSessionUseCase
+    private val startWorkSessionUseCase: StartWorkSessionUseCase,
+    private val sessionCache: CacheUserSessionRepository
 ) {
-
-    /**
-     * Ejecuta la autenticación, intenta restaurar una sesión activa o inicia una nueva.
-     *
-     * @param email Correo del usuario.
-     * @param password Contraseña del usuario.
-     * @return [Result.success] con el empleado si las credenciales son correctas,
-     *         o [Result.failure] con [AuthError] si algo falla.
-     */
     suspend operator fun invoke(email: String, password: String): Result<EmployeeDomainModel> {
         return try {
-            val userId = userAuthRepository.authUser(email, password) ?: return Result.failure(
-                AuthError.InvalidCredentials
-            )
+            val userId = userAuthRepository.authUser(email, password)
+                ?: return Result.failure(AuthError.InvalidCredentials)
 
-            val employee = employeesRepository.getWorker(userId)
+            val employee = employeesRepository.getEmployee(userId)
                 ?: return Result.failure(AuthError.UserNotFound)
+
+            sessionCache.setUser(employee) // guardamos el usuario actual
 
             val restoredSessionResult = restoreWorkSessionUseCase(userId)
 
             restoredSessionResult.fold(
                 onSuccess = { session ->
-                    if (session == null) {
-                        // No hay sesión activa, se inicia una nueva
-                        startWorkSessionUseCase(
-                            userId = employee.userId,
-                            sessionStart = System.currentTimeMillis()
-                        )
+                    if (session != null) {
+                        sessionCache.setSession(session) // también cacheamos la sesión restaurada
+                        Log.i("AuthUseCase", "Sesión restaurada desde Firebase y cacheada")
+                    } else {
+                        val start = System.currentTimeMillis()
+                        startWorkSessionUseCase(userId, start)
+                        // el Mediator ya cacheará esta sesión automáticamente
+                        Log.i("AuthUseCase", "Nueva sesión iniciada y cacheada")
                     }
+
                     Result.success(employee)
                 },
                 onFailure = { Result.failure(AuthError.Unknown(it)) }

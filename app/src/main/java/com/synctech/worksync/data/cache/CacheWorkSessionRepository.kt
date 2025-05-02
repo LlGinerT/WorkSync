@@ -1,27 +1,37 @@
 package com.synctech.worksync.data.cache
 
+import com.synctech.worksync.domain.models.EmployeeDomainModel
 import com.synctech.worksync.domain.models.WorkSessionDomainModel
-import com.synctech.worksync.domain.repositories.WorkSessionRepository
 
-class CacheWorkSessionRepository : WorkSessionRepository {
-    private val sessionList = mutableListOf<WorkSessionDomainModel>()
+class CacheUserSessionRepository {
 
+    private var currentUser: EmployeeDomainModel? = null
+    private var activeSession: WorkSessionDomainModel? = null
 
-    override suspend fun saveWorkSession(session: WorkSessionDomainModel) {
-        sessionList.add(session)
+    fun setUser(user: EmployeeDomainModel) {
+        currentUser = user
     }
 
-    override suspend fun getWorkSession(userId: String): List<WorkSessionDomainModel> {
-        return sessionList.filter { it.userId == userId }
+    fun getUser(): EmployeeDomainModel? = currentUser
+
+    fun clearUser() {
+        currentUser = null
     }
 
-    override suspend fun updateWorkSession(session: WorkSessionDomainModel): Boolean {
-        val index = sessionList.indexOfFirst { it.sessionId == session.sessionId }
-        return if (index != -1) {
-            sessionList[index] = session
-            true
-        } else {
-            false
-        }
+    fun setSession(session: WorkSessionDomainModel) {
+        activeSession = session
+    }
+
+    fun getSession(): WorkSessionDomainModel? = activeSession
+
+    fun clearSession() {
+        activeSession = null
+    }
+
+    fun clearAll() {
+        clearUser()
+        clearSession()
     }
 }
+
+
