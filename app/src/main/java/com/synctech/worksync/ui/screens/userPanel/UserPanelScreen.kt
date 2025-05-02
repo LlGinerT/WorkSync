@@ -72,7 +72,7 @@ fun UserPanelScreen(onLogout: () -> Unit, viewModel: UserPanelViewModel) {
                         val result = viewModel.logout()
                         result.onSuccess {
                             Log.i("UserPanelScreen", "Sesión finalizada correctamente")
-                            // TODO: Navegar a LoginScreen
+                            onLogout()
                         }.onFailure {
                             Log.e("UserPanelScreen", "Error al cerrar sesión", it)
                             // TODO: Mostrar snackbar o alerta
