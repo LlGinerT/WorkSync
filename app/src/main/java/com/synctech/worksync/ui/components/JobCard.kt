@@ -1,5 +1,6 @@
 package com.synctech.worksync.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -78,7 +79,12 @@ fun JobCard(job: JobUiModel, onClick: () -> Unit) {
     }
 }
 
-@Preview
+@Preview(showBackground = true, name = "MainScaffold - Light Mode")
+@Preview(
+    showBackground = true,
+    name = "MainScaffold - Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 fun JobCardPreview() {
     WorkSyncTheme {
