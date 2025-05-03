@@ -1,7 +1,6 @@
 package com.synctech.worksync.ui.screens.userPanel
 
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,30 +10,42 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.synctech.worksync.ui.session.SessionViewModel
-import com.synctech.worksync.ui.uiUtils.formatTimestamp
-import com.synctech.worksync.ui.uiUtils.formatWorkedTime
+import com.synctech.worksync.ui.uiUtils.secondsToTimeString
+import com.synctech.worksync.ui.uiUtils.timestampToString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun UserPanelScreen(sessionViewModel: SessionViewModel) {
-    val user = sessionViewModel.uiEmployee
-    val uiState by sessionViewModel.state.collectAsState()
-    val timeWorked = formatWorkedTime(uiState.secondsWorked)
-    val startTimeStamp = formatTimestamp(uiState.sessionStart)
+fun UserPanelScreen(onLogoutSuccess: () -> Unit, viewModel: UserPanelViewModel) {
+    val uiState by viewModel.uiState.collectAsState()
+    val user = uiState.employee
+    val timeWorked = secondsToTimeString(uiState.secondsWorked)
+    val startTimeStamp = timestampToString(uiState.workSession?.startTime ?: 0)
+
+    LaunchedEffect(Unit) {
+        viewModel.eventFlow.collect { event ->
+            when (event) {
+                is UserPanelUiEvent.LogoutSuccess -> {
+                    onLogoutSuccess()
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -70,22 +81,23 @@ fun UserPanelScreen(sessionViewModel: SessionViewModel) {
             Button(
                 onClick = {
                     CoroutineScope(Dispatchers.Main).launch {
-                        val result = sessionViewModel.logout()
-                        result.onSuccess {
-                            Log.i("UserPanelScreen", "Sesión finalizada correctamente")
-                            // TODO: Navegar a LoginScreen
-                        }.onFailure {
-                            Log.e("UserPanelScreen", "Error al cerrar sesión", it)
-                            // TODO: Mostrar snackbar o alerta
-                        }
+                        viewModel.logout()
                     }
-                },
-                modifier = Modifier
+                }, enabled = !uiState.isLoggingOut, modifier = Modifier
                     .height(48.dp)
                     .width(320.dp)
             ) {
-                Text("Cerrar Sesión", style = MaterialTheme.typography.labelLarge)
+                if (uiState.isLoggingOut) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text("Cerrar Sesión", style = MaterialTheme.typography.labelLarge)
+                }
             }
+
         }
     }
 }

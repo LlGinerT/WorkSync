@@ -5,61 +5,48 @@ import com.synctech.worksync.domain.models.ItemsDomainModel
 import com.synctech.worksync.domain.repositories.InventoryRepository
 
 /**
- * Implementación de prueba del repositorio de materiales.
- * Proporciona datos ficticios para simular la interacción con un repositorio real.
+ * Implementación mock del repositorio para pruebas unitarias o desarrollo inicial.
+ * Proporciona datos ficticios.
  */
-class MockInventoryDataRepository : InventoryRepository {
-    private val mockitemsDomainModelData = mutableListOf(
-        ItemsDomainModel(
-            materialId = 1, name = "Cable De Red", precio = 100.50, cantidad = 35
-        ),
-        ItemsDomainModel(
-            materialId = 2, name = "Adaptador RJ45", precio = 170.50, cantidad = 60
-        ),
-        ItemsDomainModel(
-            materialId = 3, name = "Módem", precio = 65.50, cantidad = 120
-        ),
-        ItemsDomainModel(
-            materialId = 4, name = "Switch de Red", precio = 80.50, cantidad = 46
-        ),
+class MockInventoryRepository : InventoryRepository {
+
+    private val mockInventoryData = mutableListOf(
+        ItemsDomainModel(materialId = 1, name = "Cable de Red", precio = 100.50, cantidad = 35),
+        ItemsDomainModel(materialId = 2, name = "Adaptador RJ45", precio = 170.50, cantidad = 60),
+        ItemsDomainModel(materialId = 3, name = "Módem", precio = 65.50, cantidad = 120),
+        ItemsDomainModel(materialId = 4, name = "Switch de Red", precio = 80.50, cantidad = 46)
     )
 
-    /**
-     * Obtiene la lista de materiales disponibles en el repositorio simulado.
-     *
-     * @return Lista de materiales.
-     */
-    override suspend fun getItems(): List<ItemsDomainModel> {
-        return mockitemsDomainModelData
-    }
+    override suspend fun getItems(): Result<List<ItemsDomainModel>> =
+        Result.success(mockInventoryData)
 
-    /**
-     * Agrega un itemsDomainModel al repositorio simulado.
-     *
-     * @param employee Usuario que realiza la acción de agregar el itemsDomainModel.
-     * @param itemsDomainModel El itemsDomainModel a agregar.
-     * @return `true` si el itemsDomainModel se agregó correctamente, siempre retorna `true` en esta implementación.
-     */
     override suspend fun addItem(
-        employee: EmployeeDomainModel, itemsDomainModel: ItemsDomainModel
-    ): Boolean {
-        return true
+        employee: EmployeeDomainModel,
+        item: ItemsDomainModel
+    ): Result<Boolean> {
+        mockInventoryData.add(item)
+        return Result.success(true)
     }
 
-    /**
-     * Elimina un itemsDomainModel del repositorio simulado.
-     *
-     * @param employee Usuario que realiza la acción de eliminar el itemsDomainModel.
-     * @param itemsDomainModel El itemsDomainModel a eliminar.
-     * @return `true` si el itemsDomainModel se eliminó correctamente, siempre retorna `true` en esta implementación.
-     */
+    override suspend fun updateItem(
+        employee: EmployeeDomainModel,
+        item: ItemsDomainModel
+    ): Result<Boolean> {
+        val index = mockInventoryData.indexOfFirst { it.materialId == item.materialId }
+        return if (index >= 0) {
+            mockInventoryData[index] = item
+            Result.success(true)
+        } else {
+            Result.failure(Exception("Material no encontrado en datos mock."))
+        }
+    }
+
     override suspend fun removeItem(
-        employee: EmployeeDomainModel, itemsDomainModel: ItemsDomainModel
-    ): Boolean {
-        return true
-    }
-
-    override suspend fun updateItem() {
-        TODO("Not yet implemented")
+        employee: EmployeeDomainModel,
+        item: ItemsDomainModel
+    ): Result<Boolean> {
+        val removed = mockInventoryData.removeIf { it.materialId == item.materialId }
+        return if (removed) Result.success(true)
+        else Result.failure(Exception("Material no encontrado en datos mock."))
     }
 }

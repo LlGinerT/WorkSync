@@ -3,66 +3,92 @@ package com.synctech.worksync.ui.screens.inventoryPanel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.synctech.worksync.domain.useCases.GetInventoryUseCase
+import com.synctech.worksync.domain.models.ActiveSessionContext
+import com.synctech.worksync.domain.models.EmployeeDomainModel
+import com.synctech.worksync.domain.models.ItemsDomainModel
+import com.synctech.worksync.domain.repositories.InventoryRepository
 import com.synctech.worksync.ui.models.toUi
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
- * ViewModel para gestionar el estado y la lógica de negocio de la pantalla de materiales.
+ * ViewModel encargado de gestionar el estado y operaciones del inventario.
  *
- * @param getInventoryUseCase Caso de uso para obtener la lista de materiales desde el dominio.
+ * Utiliza directamente el [InventoryRepository] para acceder a los datos
+ * y el [ActiveSessionContext] para obtener el usuario activo.
+ *
+ * @property inventoryRepository Repositorio de inventario (mediador).
  */
 class InventoryViewModel(
-    private val getInventoryUseCase: GetInventoryUseCase,
+    private val inventoryRepository: InventoryRepository,
 ) : ViewModel() {
 
-    /** Estado de la interfaz de usuario representado mediante StateFlow. */
+    /** Estado observable de la interfaz de usuario. */
     private val _uiState = MutableStateFlow(InventoryState())
     val uiState: StateFlow<InventoryState> = _uiState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            fetchMaterials()
-            Log.i("InventoryViewModel", "ViewModel inicializado.")
-        }
+        fetchInventory()
     }
 
     /**
-     * Obtiene la lista de materiales y actualiza el estado de la interfaz de usuario.
-     * Maneja el proceso en un coroutine utilizando `viewModelScope` y `Dispatchers.IO`.
+     * Recupera el inventario completo desde el repositorio.
+     * Aplica transformación de modelo de dominio a modelo de UI.
      */
-    private suspend fun fetchMaterials() {
-        _uiState.update { it.copy(showLoadingIndicator = true) }
+    private fun fetchInventory() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(showLoadingIndicator = true) }
 
-        val result = withContext(Dispatchers.IO) {
-            getInventoryUseCase()
+            inventoryRepository.getItems()
+                .onSuccess { items ->
+                    _uiState.update {
+                        it.copy(
+                            inventory = items.map { item -> item.toUi() },
+                            showLoadingIndicator = false,
+                            errorMessage = null
+                        )
+                    }
+                    Log.i("InventoryViewModel", "Inventario cargado correctamente")
+                }
+                .onFailure { error ->
+                    _uiState.update {
+                        it.copy(
+                            showLoadingIndicator = false,
+                            errorMessage = error.message
+                                ?: "Error desconocido al cargar inventario."
+                        )
+                    }
+                    Log.e("InventoryViewModel", "Error al cargar inventario", error)
+                }
         }
-
-        result.onSuccess { items ->
-            _uiState.update {
-                it.copy(
-                    inventory = items.map { item -> item.toUi() },
-                    showLoadingIndicator = false,
-                    errorMessage = null
-                )
-            }
-            Log.i("InventoryViewModel", "Inventario cargado con exito: ${items.size}")
-        }.onFailure { error ->
-            _uiState.update {
-                it.copy(
-                    showLoadingIndicator = false,
-                    errorMessage = error.message ?: "Error desconocido"
-                )
-            }
-            Log.e("InventoryViewModel", "Error obteniendo inventario: ${error.message}", error)
+    }
+    //TODO: Extraer el update a un caso de uso, para poder usarlo cuando se cierre un Job actulizar el inventario
+    /**
+     * Actualiza un material del inventario.
+     *
+     * @param item El material actualizado.
+     */
+    fun updateItem(item: ItemsDomainModel) {
+        viewModelScope.launch {
+            inventoryRepository.updateItem(EmployeeDomainModel.SYSTEM_USER, item)
+                .onSuccess {
+                    fetchInventory()
+                    Log.i("InventoryViewModel", "Material actualizado correctamente")
+                }
+                .onFailure { error ->
+                    _uiState.update {
+                        it.copy(
+                            errorMessage = error.message ?: "No se pudo actualizar el material."
+                        )
+                    }
+                    Log.e("InventoryViewModel", "Error al actualizar material", error)
+                }
         }
-
     }
 }
+
+
 

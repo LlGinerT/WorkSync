@@ -1,6 +1,7 @@
 package com.synctech.worksync.ui.screens.inventoryPanel
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -26,6 +27,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.synctech.worksync.ui.models.ItemUiModel
 
+/**
+ * Fondo con color por defecto de la aplicación para la pantalla de inventario.
+ *
+ * @param content Contenido visual que se mostrará sobre el fondo.
+ */
 @Composable
 private fun InventoryBackground(content: @Composable () -> Unit) {
     Box(
@@ -38,14 +44,17 @@ private fun InventoryBackground(content: @Composable () -> Unit) {
 }
 
 /**
- * Pantalla principal que maneja la vista de los materiales.
+ * Pantalla principal de visualización de materiales del inventario.
  *
- * @param viewModel El ViewModel que proporciona el estado de la UI.
- * @param modifier Modificador para aplicar ajustes al diseño del Composable.
+ * @param viewModel ViewModel que proporciona el estado y operaciones.
+ * @param navController Controlador de navegación (sin uso por ahora).
+ * @param modifier Modificador de layout externo.
  */
 @Composable
 fun MaterialScreen(
-    viewModel: InventoryViewModel, navController: NavController, modifier: Modifier = Modifier
+    viewModel: InventoryViewModel,
+    navController: NavController,
+    modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -71,34 +80,38 @@ fun MaterialScreen(
                 if (uiState.inventory.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
-                            text = "No hay trabajos disponibles.",
+                            text = "No hay materiales disponibles.",
                             color = colorScheme.onBackground,
                             style = typography.bodyLarge
                         )
                     }
                 } else {
-                    MaterialList(uiState.inventory)
+                    MaterialList(
+                        materials = uiState.inventory,
+                        onItemClick = { /* preparar para editar más adelante */ }
+                    )
                 }
             }
         }
     }
 }
 
-
 /**
- * Lista de materiales mostrada en la pantalla.
+ * Lista visual de materiales del inventario.
  *
- * @param materials Lista de objetos ItemUiModel que contienen los datos de los materiales.
+ * @param materials Lista de materiales en formato UI.
+ * @param onItemClick Acción al pulsar un material (por ahora sin uso).
  */
 @Composable
 fun MaterialList(
-    materials: List<ItemUiModel>
+    materials: List<ItemUiModel>,
+    onItemClick: (ItemUiModel) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
-            // Cabecera de la lista
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -107,33 +120,34 @@ fun MaterialList(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "ID",
+                    "ID",
                     style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.weight(1f)
                 )
                 Text(
-                    text = "Nombre",
+                    "Nombre",
                     style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.weight(2f)
                 )
                 Text(
-                    text = "Precio",
+                    "Precio",
                     style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.weight(1f)
                 )
                 Text(
-                    text = "Cantidad",
+                    "Cantidad",
                     style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.weight(1f)
                 )
             }
         }
+
         items(materials) { material ->
-            // Elementos de la lista
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp),
+                    .padding(vertical = 4.dp)
+                    .clickable { onItemClick(material) },
                 elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
                 shape = shapes.medium
             ) {
@@ -143,9 +157,7 @@ fun MaterialList(
                         .padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = material.itemId.toString(), style = typography.bodyMedium
-                    )
+                    Text(text = material.itemId.toString(), style = typography.bodyMedium)
                     Text(
                         text = material.name,
                         style = typography.bodyMedium,
@@ -166,4 +178,5 @@ fun MaterialList(
         }
     }
 }
+
 

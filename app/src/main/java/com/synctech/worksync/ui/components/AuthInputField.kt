@@ -43,14 +43,13 @@ fun AuthInputField(
         label = { Text(label) },
         isError = errorMessage != null,
         supportingText = {
-            errorMessage?.let {
-                // ?.let es una forma de decir si no es null haz algo,
-                // nos ahorra el if (errorMessage != null) por complicarlo un poco
-                // y aprender cosas nuevas
-                Text(
-                    it,
-                    color = errorColor
-                )
+            if (!isPassword) {
+                errorMessage?.let {
+                    Text(
+                        it,
+                        color = errorColor
+                    )
+                }
             }
         },
         colors = OutlinedTextFieldDefaults.colors(

@@ -42,12 +42,35 @@ import com.synctech.worksync.R
 import com.synctech.worksync.ui.models.JobUiModel
 
 
+/**
+ * Fondo de pantalla para el detalle del trabajo.
+ *
+ * @param content Contenido principal a renderizar.
+ */
 @Composable
-fun JobDetailScreen(jobDetailViewModel: JobDetailViewModel, jobId: String) {
+private fun JobDetailBackground(content: @Composable () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        content()
+    }
+}
 
+
+/**
+ * Pantalla que muestra los detalles de un trabajo específico.
+ *
+ * @param jobDetailViewModel ViewModel que gestiona la lógica de esta pantalla.
+ * @param jobId ID del trabajo a mostrar, recibido desde la navegación.
+ */
+@Composable
+fun JobDetailScreen(
+    jobDetailViewModel: JobDetailViewModel, jobId: String
+) {
     val context = LocalContext.current
     val uiState by jobDetailViewModel.uiState.collectAsState()
-    val job = uiState.job
 
     LaunchedEffect(jobId) {
         jobDetailViewModel.loadWorkDetail(jobId)
@@ -56,7 +79,7 @@ fun JobDetailScreen(jobDetailViewModel: JobDetailViewModel, jobId: String) {
     JobDetailBackground {
         when {
             uiState.showLoadingIndicator -> {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
@@ -71,31 +94,28 @@ fun JobDetailScreen(jobDetailViewModel: JobDetailViewModel, jobId: String) {
                 }
             }
 
-            job != null -> {
+            uiState.job != null -> {
+                val job = uiState.job!!
                 JobDetailContent(job = job, context = context)
             }
         }
-
     }
 }
 
-@Composable
-private fun JobDetailBackground(content: @Composable () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        content()
-    }
-}
 
+/**
+ * Fila con un título y su valor, usada para mostrar los campos del trabajo.
+ *
+ * @param title Título del campo (por ejemplo: "Cliente").
+ * @param value Valor asociado al título.
+ */
 @Composable
 private fun DetailRow(title: String, value: String) {
     Column(modifier = Modifier.padding(vertical = 4.dp)) {
         Text(
-            text = title,
-            style = MaterialTheme.typography.labelSmall.copy(color = Color.Gray, fontSize = 12.sp)
+            text = title, style = MaterialTheme.typography.labelSmall.copy(
+                color = Color.Gray, fontSize = 12.sp
+            )
         )
         Text(
             text = value,
@@ -106,60 +126,65 @@ private fun DetailRow(title: String, value: String) {
     }
 }
 
-
+/**
+ * Contenido principal del detalle del trabajo.
+ *
+ * @param job Objeto con los datos del trabajo.
+ * @param context Contexto actual de la aplicación, necesario para lanzar el intent de Maps.
+ */
 @Composable
 private fun JobDetailContent(
     job: JobUiModel, context: Context
 ) {
-    Box {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            text = "Detalles del Trabajo",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold
+        )
+
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            elevation = cardElevation(defaultElevation = 6.dp),
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                text = "Detalles del Trabajo",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
-            )
-
-            Card(
-                shape = RoundedCornerShape(16.dp),
-                elevation = cardElevation(defaultElevation = 6.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    DetailRow(title = "Trabajo", value = job.jobName)
-                    DetailRow(title = "Cliente", value = job.clientName)
-                    DetailRow(title = "Descripción", value = job.description)
-                    DetailRow(title = "Dirección", value = job.address)
-                }
+            Column(modifier = Modifier.padding(16.dp)) {
+                DetailRow(title = "Trabajo", value = job.jobName)
+                DetailRow(title = "Cliente", value = job.clientName)
+                DetailRow(title = "Descripción", value = job.description)
+                DetailRow(title = "Dirección", value = job.address)
             }
-
-            ElevatedButton(
-                onClick = {
-                    val uri =
-                        Uri.parse("https://www.google.com/maps/search/?api=1&query=${Uri.encode(job.address)}")
-                    val intent = Intent(Intent.ACTION_VIEW, uri)
-                    context.startActivity(intent)
-                }, modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Icon(Icons.Filled.LocationOn, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Ver en Google Maps")
-            }
-
-            Image(
-                painter = painterResource(id = R.drawable.map),
-                contentDescription = "Mapa del trabajo",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .padding(top = 8.dp)
-                    .clip(RoundedCornerShape(12.dp))
-            )
         }
+
+        ElevatedButton(
+            onClick = {
+                val uri = Uri.parse(
+                    "https://www.google.com/maps/search/?api=1&query=${Uri.encode(job.address)}"
+                )
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                context.startActivity(intent)
+            }, modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Icon(Icons.Filled.LocationOn, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Ver en Google Maps")
+        }
+
+        Image(
+            painter = painterResource(id = R.drawable.map),
+            contentDescription = "Mapa del trabajo",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .padding(top = 8.dp)
+                .clip(RoundedCornerShape(12.dp))
+        )
     }
 }
+
 
