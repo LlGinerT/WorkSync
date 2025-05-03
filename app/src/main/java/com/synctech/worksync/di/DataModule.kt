@@ -1,6 +1,8 @@
 package com.synctech.worksync.di
 
 import com.synctech.worksync.data.EmployeesMediator
+import com.synctech.worksync.data.InventoryMediator
+import com.synctech.worksync.data.JobsMediator
 import com.synctech.worksync.data.cache.CacheEmployeesRepository
 import com.synctech.worksync.data.cache.CacheInventoryRepository
 import com.synctech.worksync.data.cache.CacheJobsRepository
@@ -40,12 +42,12 @@ val dataModule = module {
         )
     }
     single<InventoryRepository>(inventoryMediator) {
-        com.synctech.worksync.data.InventoryMediator(
+        InventoryMediator(
             remote = get(inventoryMock), cache = get(inventoryCache)
         )
     }
     single<JobsRepository>(jobMediator) {
-        com.synctech.worksync.data.JobsMediator(
+        JobsMediator(
             remote = get(jobMock), cache = get(jobCache)
         )
     }

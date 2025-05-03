@@ -17,8 +17,7 @@ class WorkSyncApp : Application() {
                 sessionModule,
                 dataModule,
                 viewModelModule
-            ) // Aquí puedes añadir más módulos luego
+            )
         }
-
     }
 }

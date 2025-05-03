@@ -47,7 +47,7 @@ class AuthUserUseCase(
                 .maxByOrNull { it.startTime }
 
             if (activeSession != null) {
-                Log.i("AuthUseCase", "Sesión restaurada desde repositorio")
+                Log.i("AuthUseCase", "Sesión inacabada encontrada y restaurada desde remoto")
                 sessionCache.setSession(activeSession)
             } else {
                 // Inicia una nueva

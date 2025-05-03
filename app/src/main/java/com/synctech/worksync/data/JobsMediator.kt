@@ -1,7 +1,5 @@
 package com.synctech.worksync.data
 
-import com.synctech.worksync.data.cache.CacheJobsRepository
-import com.synctech.worksync.data.testData.MockJobsDataRepository
 import com.synctech.worksync.domain.models.EmployeeDomainModel
 import com.synctech.worksync.domain.models.JobDomainModel
 import com.synctech.worksync.domain.repositories.JobsRepository
@@ -15,8 +13,8 @@ import com.synctech.worksync.domain.repositories.JobsRepository
  * @property remote Repositorio mock que simula el backend remoto.
  */
 class JobsMediator(
-    private val cache: CacheJobsRepository,
-    private val remote: MockJobsDataRepository
+    private val cache: JobsRepository,
+    private val remote: JobsRepository
 ) : JobsRepository {
 
     override suspend fun getJobs(user: EmployeeDomainModel): List<JobDomainModel> {
