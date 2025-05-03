@@ -1,5 +1,6 @@
 package com.synctech.worksync.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -10,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import com.synctech.worksync.ui.theme.WorkSyncTheme
 
 /**
  * Campo de texto reutilizable para autenticación (email, contraseña, etc.).
@@ -62,51 +64,79 @@ fun AuthInputField(
     )
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "MainScaffold - Light Mode")
+@Preview(
+    showBackground = true,
+    name = "MainScaffold - Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 fun EmailInputPreview_NoError() {
-    AuthInputField(
-        value = "usuario@email.com",
-        onValueChange = {},
-        label = "Email",
-        errorMessage = null,
-        isPassword = false
-    )
+    WorkSyncTheme {
+        AuthInputField(
+            value = "usuario@email.com",
+            onValueChange = {},
+            label = "Email",
+            errorMessage = null,
+            isPassword = false
+        )
+    }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "MainScaffold - Light Mode")
+@Preview(
+    showBackground = true,
+    name = "MainScaffold - Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 fun EmailInputPreview_WithError() {
-    AuthInputField(
-        value = "usuario@email",
-        onValueChange = {},
-        label = "Email",
-        errorMessage = "Correo inválido",
-        isPassword = false
-    )
+    WorkSyncTheme {
+        AuthInputField(
+            value = "usuario@email",
+            onValueChange = {},
+            label = "Email",
+            errorMessage = "Correo inválido",
+            isPassword = false
+        )
+    }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "MainScaffold - Light Mode")
+@Preview(
+    showBackground = true,
+    name = "MainScaffold - Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 fun PasswordInputPreview_noError() {
-    AuthInputField(
-        value = "1234",
-        onValueChange = {},
-        label = "Contraseña",
-        errorMessage = null,
-        isPassword = true
-    )
+    WorkSyncTheme {
+        AuthInputField(
+            value = "1234",
+            onValueChange = {},
+            label = "Contraseña",
+            errorMessage = null,
+            isPassword = true
+        )
+    }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "MainScaffold - Light Mode")
+@Preview(
+    showBackground = true,
+    name = "MainScaffold - Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 fun PasswordInputPreview_WithError() {
-    AuthInputField(
-        value = "1234",
-        onValueChange = {},
-        label = "Contraseña",
-        errorMessage = "Contraseña incorrecta",
-        isPassword = true
-    )
+    WorkSyncTheme {
+        AuthInputField(
+            value = "1234",
+            onValueChange = {},
+            label = "Contraseña",
+            errorMessage = "Contraseña incorrecta",
+            isPassword = true
+        )
+    }
 }
 
