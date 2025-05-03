@@ -1,8 +1,6 @@
 package com.synctech.worksync.data
 
 import android.util.Log
-import com.synctech.worksync.data.cache.CacheInventoryRepository
-import com.synctech.worksync.data.testData.MockInventoryRepository
 import com.synctech.worksync.domain.models.EmployeeDomainModel
 import com.synctech.worksync.domain.models.ItemsDomainModel
 import com.synctech.worksync.domain.repositories.InventoryRepository
@@ -14,8 +12,8 @@ import com.synctech.worksync.domain.repositories.InventoryRepository
  * Actualmente utiliza MockInventoryRepository como repositorio remoto para simular Firebase.
  */
 class InventoryMediator(
-    private val cache: CacheInventoryRepository,
-    private val remote: MockInventoryRepository // Mock simula remoto (Firebase)
+    private val cache: InventoryRepository,
+    private val remote: InventoryRepository
 ) : InventoryRepository {
 
     /**
