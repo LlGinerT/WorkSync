@@ -3,9 +3,13 @@ package com.synctech.worksync.di
 import com.synctech.worksync.di.Qualifiers.activeSession
 import com.synctech.worksync.di.Qualifiers.authUser
 import com.synctech.worksync.di.Qualifiers.inventoryMediator
+import com.synctech.worksync.di.Qualifiers.jobByID
+import com.synctech.worksync.di.Qualifiers.jobMediator
 import com.synctech.worksync.di.Qualifiers.logout
 import com.synctech.worksync.di.Qualifiers.updateSession
+import com.synctech.worksync.ui.screens.detailPanel.JobDetailViewModel
 import com.synctech.worksync.ui.screens.inventoryPanel.InventoryViewModel
+import com.synctech.worksync.ui.screens.jobsPanel.JobsViewModel
 import com.synctech.worksync.ui.screens.loginPanel.LoginViewModel
 import com.synctech.worksync.ui.screens.userPanel.UserPanelViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -21,4 +25,14 @@ val viewModelModule = module {
         )
     }
     viewModel { InventoryViewModel(get(inventoryMediator)) }
+    viewModel {
+        JobDetailViewModel(
+            getJobByIdUseCase = get(jobByID), sessionCache = get(activeSession)
+        )
+    }
+    viewModel {
+        JobsViewModel(
+            jobsRepository = get(jobMediator), sessionCache = get(activeSession)
+        )
+    }
 }

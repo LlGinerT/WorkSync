@@ -84,6 +84,7 @@ fun JobCardPreview() {
     WorkSyncTheme {
         JobCard(
             job = JobUiModel(
+                jobId = "1",
                 jobName = "Ejemplo de job",
                 clientName = "Pepito Perez",
                 description = "Instalación fibra optica",

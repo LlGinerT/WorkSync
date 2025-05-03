@@ -12,6 +12,11 @@ object Qualifiers {
     val inventoryCache = named("invCache")
     val inventoryMediator = named("invMediator")
 
+    // JobsRepository
+    val jobMock = named("jobMock")
+    val jobCache = named("jobCache")
+    val jobMediator = named("jobMediator")
+
     // UserAuthRepository
     val userAuthMock = named("uaMock")
 
@@ -27,4 +32,5 @@ object Qualifiers {
     val updateSession = named("updateSession")
     val authUser = named("authUser")
     val logout = named("logout")
+    val jobByID = named("jobByID")
 }
