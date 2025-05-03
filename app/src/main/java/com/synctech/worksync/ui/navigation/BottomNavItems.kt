@@ -5,19 +5,19 @@ import com.synctech.worksync.ui.uiUtils.IconLibrary
 
 val bottomNavItems = listOf(
     BottomNavItem(
-        "JobList",
+        "main/jobs",
         "Trabajo",
         IconLibrary.JobList.filled,
         IconLibrary.JobList.outlined
     ),
     BottomNavItem(
-        "Inventory",
+        "main/inventory",
         "Inventario",
         IconLibrary.Inventory.filled,
         IconLibrary.Inventory.outlined
     ),
     BottomNavItem(
-        "UserPanel",
+        "main/userPanel",
         "Registro Horario",
         IconLibrary.TimePanel.filled,
         IconLibrary.TimePanel.outlined
