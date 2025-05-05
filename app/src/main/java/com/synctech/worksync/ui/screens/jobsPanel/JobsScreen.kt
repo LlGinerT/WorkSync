@@ -1,3 +1,4 @@
+
 package com.synctech.worksync.ui.screens.jobsPanel
 
 import androidx.compose.foundation.background
@@ -45,6 +46,8 @@ private fun JobsBackground(content: @Composable () -> Unit) {
  * @param navController Controlador de navegación para redirigir a la pantalla de detalle.
  * @param modifier Modificador opcional para ajustes de diseño.
  */
+
+
 @Composable
 fun JobScreen(
     viewModel: JobsViewModel, navController: NavController, modifier: Modifier = Modifier

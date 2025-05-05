@@ -1,3 +1,4 @@
+
 package com.synctech.worksync.ui.screens.detailPanel
 
 import android.content.Context
@@ -58,7 +59,6 @@ private fun JobDetailBackground(content: @Composable () -> Unit) {
         content()
     }
 }
-
 
 /**
  * Pantalla que muestra los detalles de un trabajo específico.
@@ -160,7 +160,7 @@ private fun JobDetailContent(
                 DetailRow(title = "Descripción", value = job.description)
                 DetailRow(title = "Dirección", value = job.address)
             }
-<<<<<<< HEAD
+
 
             ElevatedButton(
                 onClick = {
@@ -184,8 +184,7 @@ private fun JobDetailContent(
                     .padding(top = 8.dp)
                     .clip(RoundedCornerShape(12.dp))
             )
-=======
->>>>>>> dfdadb2c5e44967a5a1f7a8222766f31545afc50
+
         }
 
         ElevatedButton(
@@ -213,5 +212,7 @@ private fun JobDetailContent(
         )
     }
 }
+
+
 
 

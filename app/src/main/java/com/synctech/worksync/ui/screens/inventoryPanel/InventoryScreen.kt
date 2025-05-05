@@ -1,9 +1,7 @@
 package com.synctech.worksync.ui.screens.inventoryPanel
 
 import androidx.compose.foundation.background
-<<<<<<< HEAD
 import androidx.compose.foundation.layout.*
-=======
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
->>>>>>> dfdadb2c5e44967a5a1f7a8222766f31545afc50
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -124,52 +121,12 @@ fun MaterialList(
                     .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-<<<<<<< HEAD
-                // Columna para el encabezado de "ID"
-                Column(
-                    modifier = Modifier.weight(2f),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "ID",
-                        style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
-                    )
-                }
-                // Columna para el encabezado de "Nombre"
-                Column(
-                    modifier = Modifier.weight(2f),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Nombre",
-                        style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
-                    )
-                }
-                // Columna para el encabezado de "Precio"
-                Column(
-                    modifier = Modifier.weight(2f),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Precio",
-                        style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
-                    )
-                }
-                // Columna para el encabezado de "Cantidad"
-                Column(
-                    modifier = Modifier.weight(2f),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Cantidad",
-                        style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
-                    )
-                }
-=======
+
+                // Encabezado de la lista con los títulos: ID, Nombre, Precio y Cantidad
                 Text(
                     "ID",
                     style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(2f)
                 )
                 Text(
                     "Nombre",
@@ -179,14 +136,13 @@ fun MaterialList(
                 Text(
                     "Precio",
                     style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(2f)
                 )
                 Text(
                     "Cantidad",
                     style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(2f)
                 )
->>>>>>> dfdadb2c5e44967a5a1f7a8222766f31545afc50
             }
         }
 
@@ -205,76 +161,36 @@ fun MaterialList(
                         .padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-<<<<<<< HEAD
+
                     // Columna para el ID
-                    Column(
-                        modifier = Modifier.weight(2f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = material.itemId.toString(), style = typography.bodyMedium)
-                    }
+                    Text(
+                        text = material.itemId.toString(),
+                        style = typography.bodyMedium,
+                        modifier = Modifier.weight(2f)
+                    )
 
                     // Columna para el Nombre
-                    Column(
-                        modifier = Modifier.weight(2f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = material.name, style = typography.bodyMedium)
-                    }
-
-                    // Columna para el Precio
-                    Column(
-                        modifier = Modifier.weight(2f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = "${material.precio} €", style = typography.bodyMedium)
-                    }
-
-                    // Columna para la Cantidad
-                    Column(
-                        modifier = Modifier.weight(2f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = material.cantidad.toString(), style = typography.bodyMedium)
-                    }
-=======
-                    Text(text = material.itemId.toString(), style = typography.bodyMedium)
                     Text(
                         text = material.name,
                         style = typography.bodyMedium,
                         modifier = Modifier.weight(2f)
                     )
+
+                    // Columna para el Precio
                     Text(
                         text = "${material.precio} €",
                         style = typography.bodyMedium,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(2f)
                     )
+
+                    // Columna para la Cantidad
                     Text(
                         text = material.cantidad.toString(),
                         style = typography.bodyMedium,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(2f)
                     )
->>>>>>> dfdadb2c5e44967a5a1f7a8222766f31545afc50
                 }
             }
         }
     }
 }
-
-<<<<<<< HEAD
-@Preview(showBackground = true)
-@Composable
-fun MaterialScreenPreview() {
-    val dummyMaterials = listOf(
-        ItemUiModel(itemId = 1, name = "Cable Wifi", precio = 100.50, cantidad = 45),
-        ItemUiModel(itemId = 2, name = "Adaptador RJ45", precio = 150.90, cantidad = 30),
-        ItemUiModel(itemId = 3, name = "Módem", precio = 160.10, cantidad = 55)
-    )
-
-    InventoryBackground {
-        MaterialList(materials = dummyMaterials)
-    }
-}
-=======
->>>>>>> dfdadb2c5e44967a5a1f7a8222766f31545afc50
-
