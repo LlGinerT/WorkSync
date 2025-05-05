@@ -1,80 +1,61 @@
 package com.synctech.worksync.ui.screens.detailPanel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.synctech.worksync.data.cache.CacheActiveSessionRepository
 import com.synctech.worksync.domain.exceptions.JobsError
-import com.synctech.worksync.domain.useCases.GetJobByIdUseCase
+import com.synctech.worksync.domain.useCases.jobs.GetJobByIdUseCase
 import com.synctech.worksync.ui.models.toUi
-import com.synctech.worksync.ui.session.SessionViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 /**
- * ViewModel para la gestión de detalles de un trabajo.
+ * ViewModel responsable de gestionar el estado de detalle de un trabajo.
  *
- * @param getJobByIdUseCase [GetJobByIdUseCase]Caso de uso para obtener un trabajo por su ID.
- * @param sessionViewModel [SessionViewModel] compartido que gestiona la sesion iniciada
- * */
+ * Utiliza [GetJobByIdUseCase] y accede al usuario activo a través del [CacheActiveSessionRepository].
+ *
+ * @param getJobByIdUseCase Caso de uso para recuperar trabajos por ID.
+ * @param sessionCache Repositorio de sesión en caché.
+ */
 class JobDetailViewModel(
     private val getJobByIdUseCase: GetJobByIdUseCase,
-    private val sessionViewModel: SessionViewModel
+    private val sessionCache: CacheActiveSessionRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(JobDetailState())
     val uiState: StateFlow<JobDetailState> = _uiState
 
     /**
-     * Metodo para cargar los detalles de un trabajo por id.
+     * Carga los detalles del trabajo especificado por [jobId] y valida acceso del usuario.
      *
-     * @param jobId [String] ID del trabajo a cargar y añadirlo al state.
-     * */
-    suspend fun loadWorkDetail(jobId: String) {
+     * @param jobId ID del trabajo a cargar.
+     */
+    fun loadWorkDetail(jobId: String) {
+        val user = sessionCache.getUser() ?: run {
+            _uiState.update { it.copy(errorMessage = "Sesión no iniciada") }
+            return
+        }
+
         _uiState.update { it.copy(showLoadingIndicator = true) }
 
-        val currentUser = sessionViewModel.currentUser
-
-        currentUser?.let { it ->
-            val result = getJobByIdUseCase(jobId = jobId, it)
-            result
-                .onSuccess { job ->
-                    _uiState.update { state ->
-                        state.copy(job = job.toUi(), showLoadingIndicator = false)
-                    }
-                    Log.i("JobDetailViewModel", "Trabajo cargado: ${job.jobId}")
+        viewModelScope.launch {
+            getJobByIdUseCase(jobId, user).onSuccess { job ->
+                _uiState.update {
+                    it.copy(job = job.toUi(), showLoadingIndicator = false)
                 }
-                .onFailure { error ->
-                    val message = when (error) {
-                        is JobsError.NotFound -> {
-                            Log.w("JobDetailViewModel", "Warning: ${error.message}")
-                            "El trabajo no existe."
-                        }
-
-                        is JobsError.Unauthorized -> {
-                            Log.w("JobDetailViewModel", "Warning: ${error.message}")
-                            "No tienes permiso para ver este trabajo."
-                        }
-
-                        else -> {
-                            Log.e("JobDetailViewModel", "Error inesperado", error)
-                            "Error inesperado"
-                        }
-                    }
-                    _uiState.update {
-                        it.copy(
-                            errorMessage = message,
-                            showLoadingIndicator = false
-                        )
-                    }
+            }.onFailure { error ->
+                val message = when (error) {
+                    is JobsError.NotFound -> "El trabajo no existe."
+                    is JobsError.Unauthorized -> "No tienes permiso para ver este trabajo."
+                    else -> "Error inesperado"
                 }
-        } ?: run {
-            _uiState.update { state ->
-                state.copy(
-                    errorMessage = "Sesión no iniciada",
-                    showLoadingIndicator = false
-                )
+
+                _uiState.update {
+                    it.copy(errorMessage = message, showLoadingIndicator = false)
+                }
             }
-            Log.w("JobDetailViewModel", "Error: ${_uiState.value.errorMessage}")
         }
     }
 }

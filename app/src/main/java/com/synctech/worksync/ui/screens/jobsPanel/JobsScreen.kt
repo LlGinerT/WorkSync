@@ -22,6 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.synctech.worksync.ui.components.JobCard
 
+/**
+ * Fondo de la pantalla de trabajos, con el color de fondo de la app.
+ *
+ * @param content Composable hijo que se mostrará sobre el fondo.
+ */
 @Composable
 private fun JobsBackground(content: @Composable () -> Unit) {
     Box(
@@ -33,6 +38,13 @@ private fun JobsBackground(content: @Composable () -> Unit) {
     }
 }
 
+/**
+ * Pantalla principal que muestra la lista de trabajos disponibles.
+ *
+ * @param viewModel ViewModel que gestiona la lógica de trabajos.
+ * @param navController Controlador de navegación para redirigir a la pantalla de detalle.
+ * @param modifier Modificador opcional para ajustes de diseño.
+ */
 @Composable
 fun JobScreen(
     viewModel: JobsViewModel, navController: NavController, modifier: Modifier = Modifier
@@ -57,34 +69,33 @@ fun JobScreen(
                 }
             }
 
-            else -> {
-                if (uiState.jobsList.isEmpty()) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(
-                            text = "No hay trabajos disponibles.",
-                            color = colorScheme.onBackground,
-                            style = typography.bodyLarge
-                        )
-                    }
-                } else {
-                    LazyVerticalGrid(
-                        columns = GridCells.Adaptive(minSize = 150.dp),
-                        modifier = modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        contentPadding = PaddingValues(16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(uiState.jobsList) { job ->
-                            JobCard(job = job, onClick = {
-                                // navController.navigate("jobDetail/${job.workId}")
-                            })
-                        }
-                    }
+            uiState.jobsList.isEmpty() -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = "No hay trabajos disponibles.",
+                        color = colorScheme.onBackground,
+                        style = typography.bodyLarge
+                    )
                 }
             }
 
+            else -> {
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(minSize = 150.dp),
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    contentPadding = PaddingValues(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(uiState.jobsList) { job ->
+                        JobCard(job = job, onClick = {
+                            navController.navigate("jobDetail/${job.jobId}")
+                        })
+                    }
+                }
+            }
         }
     }
 }

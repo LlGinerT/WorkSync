@@ -7,7 +7,7 @@ import java.util.Locale
 /**
  * Formatea un valor de segundos en formato HH:mm:ss.
  */
-fun formatWorkedTime(seconds: Int): String {
+fun secondsToTimeString(seconds: Int): String {
     val hours = seconds / 3600
     val minutes = (seconds % 3600) / 60
     val secs = seconds % 60
@@ -17,7 +17,7 @@ fun formatWorkedTime(seconds: Int): String {
 /**
  * Convierte un timestamp en milisegundos a una cadena formateada.
  */
-fun formatTimestamp(millis: Long?): String {
+fun timestampToString(millis: Long?): String {
     return millis?.let {
         val date = Date(it)
         val format = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())

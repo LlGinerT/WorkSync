@@ -11,6 +11,7 @@ import com.synctech.worksync.domain.models.JobDomainModel
  * @param address La dirección donde se debe realizar el trabajo.
  */
 data class JobUiModel(
+    val jobId: String,
     val jobName: String,
     val clientName: String,
     val description: String,
@@ -24,6 +25,7 @@ data class JobUiModel(
  * @return Un objeto [JobUiModel] que contiene la información del trabajo en formato adecuado para la UI.
  */
 fun JobDomainModel.toUi() = JobUiModel(
+    jobId = this.jobId,
     jobName = this.jobName,
     clientName = this.clientName,
     description = this.description,

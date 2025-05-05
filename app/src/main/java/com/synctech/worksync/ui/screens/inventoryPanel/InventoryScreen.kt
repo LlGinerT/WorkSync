@@ -1,7 +1,17 @@
 package com.synctech.worksync.ui.screens.inventoryPanel
 
 import androidx.compose.foundation.background
+<<<<<<< HEAD
 import androidx.compose.foundation.layout.*
+=======
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+>>>>>>> dfdadb2c5e44967a5a1f7a8222766f31545afc50
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -22,6 +32,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.synctech.worksync.ui.models.ItemUiModel
 
+/**
+ * Fondo con color por defecto de la aplicación para la pantalla de inventario.
+ *
+ * @param content Contenido visual que se mostrará sobre el fondo.
+ */
 @Composable
 private fun InventoryBackground(content: @Composable () -> Unit) {
     Box(
@@ -34,14 +49,17 @@ private fun InventoryBackground(content: @Composable () -> Unit) {
 }
 
 /**
- * Pantalla principal que maneja la vista de los materiales.
+ * Pantalla principal de visualización de materiales del inventario.
  *
- * @param viewModel El ViewModel que proporciona el estado de la UI.
- * @param modifier Modificador para aplicar ajustes al diseño del Composable.
+ * @param viewModel ViewModel que proporciona el estado y operaciones.
+ * @param navController Controlador de navegación (sin uso por ahora).
+ * @param modifier Modificador de layout externo.
  */
 @Composable
 fun MaterialScreen(
-    viewModel: InventoryViewModel, navController: NavController, modifier: Modifier = Modifier
+    viewModel: InventoryViewModel,
+    navController: NavController,
+    modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -67,13 +85,16 @@ fun MaterialScreen(
                 if (uiState.inventory.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
-                            text = "No hay trabajos disponibles.",
+                            text = "No hay materiales disponibles.",
                             color = colorScheme.onBackground,
                             style = typography.bodyLarge
                         )
                     }
                 } else {
-                    MaterialList(uiState.inventory)
+                    MaterialList(
+                        materials = uiState.inventory,
+                        onItemClick = { /* preparar para editar más adelante */ }
+                    )
                 }
             }
         }
@@ -81,19 +102,21 @@ fun MaterialScreen(
 }
 
 /**
- * Lista de materiales mostrada en la pantalla.
+ * Lista visual de materiales del inventario.
  *
- * @param materials Lista de objetos ItemUiModel que contienen los datos de los materiales.
+ * @param materials Lista de materiales en formato UI.
+ * @param onItemClick Acción al pulsar un material (por ahora sin uso).
  */
 @Composable
 fun MaterialList(
-    materials: List<ItemUiModel>
+    materials: List<ItemUiModel>,
+    onItemClick: (ItemUiModel) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
-            // Cabecera de la lista
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -101,6 +124,7 @@ fun MaterialList(
                     .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+<<<<<<< HEAD
                 // Columna para el encabezado de "ID"
                 Column(
                     modifier = Modifier.weight(2f),
@@ -141,14 +165,37 @@ fun MaterialList(
                         style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
                     )
                 }
+=======
+                Text(
+                    "ID",
+                    style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+                    "Nombre",
+                    style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.weight(2f)
+                )
+                Text(
+                    "Precio",
+                    style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+                    "Cantidad",
+                    style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.weight(1f)
+                )
+>>>>>>> dfdadb2c5e44967a5a1f7a8222766f31545afc50
             }
         }
+
         items(materials) { material ->
-            // Elementos de la lista
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp),
+                    .padding(vertical = 4.dp)
+                    .clickable { onItemClick(material) },
                 elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
                 shape = shapes.medium
             ) {
@@ -158,6 +205,7 @@ fun MaterialList(
                         .padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+<<<<<<< HEAD
                     // Columna para el ID
                     Column(
                         modifier = Modifier.weight(2f),
@@ -189,12 +237,31 @@ fun MaterialList(
                     ) {
                         Text(text = material.cantidad.toString(), style = typography.bodyMedium)
                     }
+=======
+                    Text(text = material.itemId.toString(), style = typography.bodyMedium)
+                    Text(
+                        text = material.name,
+                        style = typography.bodyMedium,
+                        modifier = Modifier.weight(2f)
+                    )
+                    Text(
+                        text = "${material.precio} €",
+                        style = typography.bodyMedium,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = material.cantidad.toString(),
+                        style = typography.bodyMedium,
+                        modifier = Modifier.weight(1f)
+                    )
+>>>>>>> dfdadb2c5e44967a5a1f7a8222766f31545afc50
                 }
             }
         }
     }
 }
 
+<<<<<<< HEAD
 @Preview(showBackground = true)
 @Composable
 fun MaterialScreenPreview() {
@@ -208,4 +275,6 @@ fun MaterialScreenPreview() {
         MaterialList(materials = dummyMaterials)
     }
 }
+=======
+>>>>>>> dfdadb2c5e44967a5a1f7a8222766f31545afc50
 
