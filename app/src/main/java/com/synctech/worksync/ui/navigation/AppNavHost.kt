@@ -64,17 +64,22 @@ fun AppNavHost() {
                     val viewModel = koinViewModel<UserPanelViewModel>()
                     UserPanelScreen(onLogoutSuccess = {
                         navController.navigate("login") {
-                            popUpTo("main") { inclusive = true }
+                            popUpTo("main") { inclusive = false }
                         }
                     }, viewModel = viewModel)
                 }
             }
-        }
 
-        composable("jobDetail/{jobId}") { backStackEntry ->
-            val jobId = backStackEntry.arguments?.getString("jobId") ?: ""
-            val viewModel = koinViewModel<JobDetailViewModel>()
-            JobDetailScreen(jobDetailViewModel = viewModel, jobId = jobId, navController = navController)
+
+            composable("jobDetail/{jobId}") { backStackEntry ->
+                val jobId = backStackEntry.arguments?.getString("jobId") ?: ""
+                val viewModel = koinViewModel<JobDetailViewModel>()
+                JobDetailScreen(
+                    jobDetailViewModel = viewModel,
+                    jobId = jobId,
+                    navController = navController
+                )
+            }
         }
     }
 }
