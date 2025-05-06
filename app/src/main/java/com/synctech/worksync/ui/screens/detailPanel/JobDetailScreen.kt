@@ -1,4 +1,3 @@
-
 package com.synctech.worksync.ui.screens.detailPanel
 
 import android.content.Context
@@ -6,25 +5,18 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults.cardElevation
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -37,12 +29,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.clickable
+import androidx.navigation.NavController
 import com.synctech.worksync.R
 import com.synctech.worksync.ui.models.JobUiModel
-
 
 /**
  * Fondo de pantalla para el detalle del trabajo.
@@ -68,7 +60,7 @@ private fun JobDetailBackground(content: @Composable () -> Unit) {
  */
 @Composable
 fun JobDetailScreen(
-    jobDetailViewModel: JobDetailViewModel, jobId: String
+    jobDetailViewModel: JobDetailViewModel, jobId: String, navController: NavController
 ) {
     val context = LocalContext.current
     val uiState by jobDetailViewModel.uiState.collectAsState()
@@ -97,12 +89,11 @@ fun JobDetailScreen(
 
             uiState.job != null -> {
                 val job = uiState.job!!
-                JobDetailContent(job = job, context = context)
+                JobDetailContent(job = job, context = context, navController = navController)
             }
         }
     }
 }
-
 
 /**
  * Fila con un título y su valor, usada para mostrar los campos del trabajo.
@@ -135,7 +126,7 @@ private fun DetailRow(title: String, value: String) {
  */
 @Composable
 private fun JobDetailContent(
-    job: JobUiModel, context: Context
+    job: JobUiModel, context: Context, navController: NavController
 ) {
     Column(
         modifier = Modifier
@@ -143,10 +134,24 @@ private fun JobDetailContent(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        // Icono de retroceso en la parte superior
+        Icon(
+            imageVector = Icons.Default.ArrowBack,
+            contentDescription = "Volver",
+            modifier = Modifier
+                .clickable {
+                    navController.popBackStack()
+
+                }
+                .padding(4.dp)
+        )
+
+        // Título de detalles del trabajo con un poco más de espacio
         Text(
             text = "Detalles del Trabajo",
             style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(top = 16.dp) // Ajuste para mover el título un poco más abajo
         )
 
         Card(
@@ -160,7 +165,6 @@ private fun JobDetailContent(
                 DetailRow(title = "Descripción", value = job.description)
                 DetailRow(title = "Dirección", value = job.address)
             }
-
 
             ElevatedButton(
                 onClick = {
@@ -184,7 +188,6 @@ private fun JobDetailContent(
                     .padding(top = 8.dp)
                     .clip(RoundedCornerShape(12.dp))
             )
-
         }
 
         ElevatedButton(
@@ -212,7 +215,3 @@ private fun JobDetailContent(
         )
     }
 }
-
-
-
-

@@ -1,3 +1,5 @@
+
+
 package com.synctech.worksync.ui.navigation
 
 import androidx.compose.runtime.Composable
@@ -72,7 +74,7 @@ fun AppNavHost() {
         composable("jobDetail/{jobId}") { backStackEntry ->
             val jobId = backStackEntry.arguments?.getString("jobId") ?: ""
             val viewModel = koinViewModel<JobDetailViewModel>()
-            JobDetailScreen(jobDetailViewModel = viewModel, jobId = jobId)
+            JobDetailScreen(jobDetailViewModel = viewModel, jobId = jobId, navController = navController)
         }
     }
 }
