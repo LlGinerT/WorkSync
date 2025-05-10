@@ -1,6 +1,7 @@
 package com.synctech.worksync.ui.screens.inventoryPanel
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.synctech.worksync.ui.models.ItemUiModel
@@ -119,10 +121,12 @@ fun MaterialList(
                     .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+
+                // Encabezado de la lista con los títulos: ID, Nombre, Precio y Cantidad
                 Text(
                     "ID",
                     style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(2f)
                 )
                 Text(
                     "Nombre",
@@ -132,12 +136,12 @@ fun MaterialList(
                 Text(
                     "Precio",
                     style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(2f)
                 )
                 Text(
                     "Cantidad",
                     style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(2f)
                 )
             }
         }
@@ -157,26 +161,36 @@ fun MaterialList(
                         .padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = material.itemId.toString(), style = typography.bodyMedium)
+
+                    // Columna para el ID
+                    Text(
+                        text = material.itemId.toString(),
+                        style = typography.bodyMedium,
+                        modifier = Modifier.weight(2f)
+                    )
+
+                    // Columna para el Nombre
                     Text(
                         text = material.name,
                         style = typography.bodyMedium,
                         modifier = Modifier.weight(2f)
                     )
+
+                    // Columna para el Precio
                     Text(
                         text = "${material.precio} €",
                         style = typography.bodyMedium,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(2f)
                     )
+
+                    // Columna para la Cantidad
                     Text(
                         text = material.cantidad.toString(),
                         style = typography.bodyMedium,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(2f)
                     )
                 }
             }
         }
     }
 }
-
-
