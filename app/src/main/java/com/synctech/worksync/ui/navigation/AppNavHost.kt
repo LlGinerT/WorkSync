@@ -64,7 +64,7 @@ fun AppNavHost() {
                     val viewModel = koinViewModel<UserPanelViewModel>()
                     UserPanelScreen(onLogoutSuccess = {
                         navController.navigate("login") {
-                            popUpTo("main") { inclusive = false }
+                            popUpTo("main") { inclusive = true }
                         }
                     }, viewModel = viewModel)
                 }
