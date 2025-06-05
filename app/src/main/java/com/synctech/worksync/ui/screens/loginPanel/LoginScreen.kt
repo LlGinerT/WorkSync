@@ -115,3 +115,11 @@ fun LoginScreen(
     }
 }
 
+/*  Button(onClick = {
+               loginviewModel.login(email,password){
+                   navController.navigate("Home")
+                    },
+*
+*
+*
+* */

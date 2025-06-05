@@ -115,3 +115,48 @@ class LoginViewModel(
 
 }
 
+/* private val auth:FirebaseAuth = Firebase.auth
+fun login(email: String, password: String, onSuccess: () -> Unit){
+    viewModelScope.launch(){
+        try{
+            auth.signInWithEmaiAndPassword(email, password)
+                .addOnCompleteListener{task ->
+                if(task.isSuccesful){
+                }else{
+                    lod.d("ERROR EN FIREBAS", "Usuario y contraseña incorrectos")
+                  }
+                }
+    }catch(e:Exception){
+    Log.d("ERROR EN JETPACK, "ERROR: ${e.localizedMessage}")
+*
+*
+
+
+    fun createUser(email: String, password: String,username:String, onSuccess: () -> Unit){
+      viewModelScope.launch(){
+        try{
+            auth.createUserWithEmaiAndPassword(email, password)
+                .addOnCompleteListener{task ->
+                if(task.isSuccesful){
+                  saveUser(username)
+                   onSuccess()
+                }else{
+                    lod.d("ERROR EN FIREBAS", "Usuario y contraseña incorrectos")
+                  }
+                }
+    }catch(e:Exception){
+    Log.d("ERROR EN JETPACK, "ERROR: ${e.localizedMessage}")
+
+
+    FirebaseFirestore.getInstance().collection("Users")
+       .add(user)
+       .addOnSuccessListener{
+           Log.d("GUARDO, "GUARDADO CORRECTAMENTE")
+       }.addOnFailureListener{
+           Log.d("ERROR AL GUARDAR, "ERROR AL GUARDAR EN FIRESTORE")
+       }
+
+
+
+* */
+
