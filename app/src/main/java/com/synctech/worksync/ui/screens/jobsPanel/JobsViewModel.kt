@@ -59,3 +59,66 @@ class JobsViewModel(
         }
     }
 }
+
+/*
+private val auth:FireBaseAuth = Firebase.auth
+private val firestore = Firebase.firestore
+
+private val _jobsData = MutableStateFlow<List<JobState>>(emptyList())
+val notesData: StateFlow<List<JobState>> = _jobsData
+
+fun fectchJobs(){
+  val email = auth.currentUser?.email
+
+  firestore.collection("Jobs")
+  .whereEqualTo("emailUser", email.toString())
+  .addSnapshotListener{querySnapshot, error ->}
+       if (error != null){
+          return@addSnapshotListener}
+
+          val documents = mutableListOf<JobState>()
+          if(querySnapshot !=null){
+            for (´document in querySnapshot){
+               valMyDocument = document.toObject(JobsState::class.java).copy(idDoc = document.id)
+               documents.add(myDocument)
+                }
+            }
+            _jobsData.value
+
+}
+
+
+fun saveNewJob(jobName:String, clientName:String,description:String,address:String, onSuccess:() ->Unit){
+
+    val email = auth.currentUser?.email
+    viewModelScope.launch(Dispatchers.IO){
+        try{
+            val newJob = hashMapOs(
+              "jobName" to jobName,
+              "clientName" to clientName,
+              "description" to description,
+              "address" to address
+              )
+              firestore.collection("JobName").add(newJob)
+                 .addSuccessListener{
+                   onSuccess()}
+        }catch(e:Exception){
+           Log.d("ERROR SAVE", "ERROR AL GUARDAR" ${e.localizedMessage}")
+
+
+}
+
+fun signOut(){
+  auth.signOut()
+
+
+actions = {
+    IconButton(onClick = {
+        navController.navigate("AddJobView")
+        }){
+           Icon(imageVector = Icons.Default.Add, contentDescription = " ")
+           }
+        }
+*
+
+* */

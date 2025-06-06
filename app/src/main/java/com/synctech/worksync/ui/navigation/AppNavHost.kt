@@ -84,3 +84,10 @@ fun AppNavHost() {
     }
 }
 
+/*composable ("AddJobView")
+      AddJobView(navController, jobsVM)
+*
+*
+*
+*
+* */
