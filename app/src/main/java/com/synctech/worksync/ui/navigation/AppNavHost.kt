@@ -84,3 +84,15 @@ fun AppNavHost() {
     }
 }
 
+/*composable ("AddJobView")
+      AddJobView(navController, jobsVM)
+
+  composable("EditJobView/{idDoc}" arguments = listOf(
+     navArgument("idDoc"){type = NavType.StringType})){
+         val idDoc = it.arguments?.getString("idDoc") ?: ""
+         EditJobView(navController, jobViewModel, idDoc)
+*
+*
+*
+*
+* */

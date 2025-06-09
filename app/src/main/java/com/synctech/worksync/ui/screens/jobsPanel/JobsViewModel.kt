@@ -59,3 +59,126 @@ class JobsViewModel(
         }
     }
 }
+
+/*
+private val auth:FireBaseAuth = Firebase.auth
+private val firestore = Firebase.firestore
+
+private val _jobsData = MutableStateFlow<List<JobState>>(emptyList())
+val notesData: StateFlow<List<JobState>> = _jobsData
+
+######
+var state by mutableStateOf(JobsState()
+    perivate set
+######
+
+-----EDIT COLOCAR EN EL FORMULARIO---
+fun onValue(value:String, text:Stirng){
+  when(text){
+    "jobName" -> state = state.copy(jobName=value)
+    "clientName" -> state = state.copy(clientName = value)
+    "description" -> state = state.copy(description = value)
+    "address" -> state = state.copy(address = value)
+}
+
+
+
+fun fectchJobs(){
+  val email = auth.currentUser?.email
+
+  firestore.collection("Jobs")
+  .whereEqualTo("emailUser", email.toString())
+  .addSnapshotListener{querySnapshot, error ->}
+       if (error != null){
+          return@addSnapshotListener}
+
+          val documents = mutableListOf<JobState>()
+          if(querySnapshot !=null){
+            for (´document in querySnapshot){
+               valMyDocument = document.toObject(JobsState::class.java).copy(idDoc = document.id)
+               documents.add(myDocument)
+                }
+            }
+            _jobsData.value
+
+}
+
+
+fun saveNewJob(jobName:String, clientName:String,description:String,address:String, onSuccess:() ->Unit){
+
+    val email = auth.currentUser?.email
+    viewModelScope.launch(Dispatchers.IO){
+        try{
+            val newJob = hashMapOs(
+              "jobName" to jobName,
+              "clientName" to clientName,
+              "description" to description,
+              "address" to address
+              )
+              firestore.collection("JobName").add(newJob)
+                 .addSuccessListener{
+                   onSuccess()}
+        }catch(e:Exception){
+           Log.d("ERROR SAVE", "ERROR AL GUARDAR" ${e.localizedMessage}")
+
+
+}
+
+########
+fun getJobById(documentId: String){
+    firestore.collection("Jobs")
+        .document(documentId)
+        .addSnapshotListener{snapshot, _ ->
+            if(snapshot != null){
+                val job = snapshot.toObject(JobsState::class.java)
+                state = state.copy(
+                    jobName = job?.jobName?: "",
+                    clientName = job?.clientName?:"",
+                    description = job?.description?:"",
+                    address = job?.address?:""
+                    )}
+########
+
+
+
+fun signOut(){
+  auth.signOut()
+
+
+actions = {
+    IconButton(onClick = {
+        navController.navigate("AddJobView")
+        }){
+           Icon(imageVector = Icons.Default.Add, contentDescription = " ")
+           }
+        }
+*########  EDIT  ##########
+    LazyColumn{
+    items(datos){
+        CreateJob(
+
+
+#### FUNCION PARA GUARDAR #####
+
+fun updateUob(idDoc:String, onSuccess:() ->Unit){
+    viewModelScope.launch(Dispatchers.IO){
+        try{
+            val editJob = hashMapOs(
+              "jobName" to state.jobName,
+              "clientName" to state.clientName,
+              "description" to state.description,
+              "address" to state.address
+              )
+              firestore.collection("JobName").document(idDoc)
+              .update(editJob as Map<String, Any>)
+                 .addSuccessListener{
+                   onSuccess()}
+        }catch(e:Exception){
+           Log.d("ERROR EDITAR", "ERROR AL EDITAR" ${e.localizedMessage}")
+
+
+}
+
+
+
+* */
