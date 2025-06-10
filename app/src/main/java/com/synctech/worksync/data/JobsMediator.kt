@@ -23,7 +23,7 @@ class JobsMediator(
             cached
         } else {
             val remote = remote.getJobs(user)
-            remote.forEach { cache.addJob(it) }
+            remote.forEach { cache.createJob(it) }
             remote
         }
     }
@@ -31,13 +31,13 @@ class JobsMediator(
     override suspend fun getJobById(jobId: String): JobDomainModel? {
         return cache.getJobById(jobId) ?: remote.getJobById(jobId)
             ?.also {
-                cache.addJob(it)
+                cache.createJob(it)
             }
     }
 
     // Métodos futuros no implementados
-    override suspend fun addJob(jobDomainModel: JobDomainModel): Boolean {
-        return false
+    override suspend fun createJob(jobDomainModel: JobDomainModel): Boolean {
+        return cache.createJob(jobDomainModel) && remote.createJob(jobDomainModel)
     }
 
     override suspend fun updateJob(jobDomainModel: JobDomainModel): Boolean {

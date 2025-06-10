@@ -1,5 +1,6 @@
 package com.synctech.worksync.data.testData
 
+import android.util.Log
 import com.synctech.worksync.domain.models.EmployeeDomainModel
 import com.synctech.worksync.domain.models.JobDomainModel
 import com.synctech.worksync.domain.repositories.JobsRepository
@@ -63,8 +64,10 @@ class MockJobsDataRepository : JobsRepository {
         return mockJobDomainModelData.firstOrNull { it.jobId == jobId }
     }
 
-    override suspend fun addJob(jobDomainModel: JobDomainModel): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun createJob(jobDomainModel: JobDomainModel): Boolean {
+        mockJobDomainModelData.add(jobDomainModel)
+        Log.d("CacheJobsRepository", "Lista en cache: $mockJobDomainModelData")
+        return true
     }
 
     override suspend fun updateJob(jobDomainModel: JobDomainModel): Boolean {

@@ -1,5 +1,6 @@
 package com.synctech.worksync.data.cache
 
+import android.util.Log
 import com.synctech.worksync.domain.models.EmployeeDomainModel
 import com.synctech.worksync.domain.models.JobDomainModel
 import com.synctech.worksync.domain.repositories.JobsRepository
@@ -25,8 +26,9 @@ class CacheJobsRepository : JobsRepository {
         return cachedJobs.firstOrNull { it.jobId == jobId }
     }
 
-    override suspend fun addJob(jobDomainModel: JobDomainModel): Boolean {
+    override suspend fun createJob(jobDomainModel: JobDomainModel): Boolean {
         cachedJobs.add(jobDomainModel)
+        Log.d("CacheJobsRepository", "Lista en cache: $cachedJobs")
         return true
     }
 

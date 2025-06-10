@@ -33,7 +33,7 @@ interface JobsRepository {
      * @param jobDomainModel Trabajo a agregar.
      * @return `true` si el trabajo fue agregado, `false` si no se tenía permiso.
      */
-    suspend fun addJob(jobDomainModel: JobDomainModel): Boolean
+    suspend fun createJob (jobDomainModel: JobDomainModel): Boolean
 
     suspend fun updateJob(jobDomainModel: JobDomainModel): Boolean
 
