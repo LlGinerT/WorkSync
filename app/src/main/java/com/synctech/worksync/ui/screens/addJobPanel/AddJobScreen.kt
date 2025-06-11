@@ -10,29 +10,42 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 
 @Composable
 fun AddJobScreen(
     onSave: () -> Unit,
     onCancel: () -> Unit,
     viewModel: AddJobViewModel
-){
-
+) {
     val state by viewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collect { event ->
             when (event) {
                 is AddJobUiEvent.JobSaved -> {
-                    onSave()
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = "El trabajo se ha guardado",
+                            duration = androidx.compose.material3.SnackbarDuration.Short
+                        )
+                        kotlinx.coroutines.delay(1500)
+                        onSave()
+                    }
                 }
 
                 is AddJobUiEvent.JobCancelled -> {
@@ -88,6 +101,7 @@ fun AddJobScreen(
                 .padding(vertical = 8.dp),
             maxLines = 5
         )
+
         OutlinedTextField(
             value = state.assignedTo,
             onValueChange = viewModel::onAssignedToChanged,
@@ -97,9 +111,30 @@ fun AddJobScreen(
                 .padding(vertical = 8.dp),
             maxLines = 5
         )
-        Row(modifier = Modifier.padding(10.dp)){
-            Button(onClick = { viewModel.cancel() }, modifier = Modifier.weight(1f).padding(end = 8.dp)) { Text("Cancelar") }
-            Button(onClick = { viewModel.save()}, modifier = Modifier.weight(1f)) { Text("Guardar") }
+
+        Row(modifier = Modifier.padding(10.dp)) {
+            Button(
+                onClick = { viewModel.cancel() },
+                modifier = Modifier.weight(1f).padding(end = 8.dp)
+            ) { Text("Cancelar") }
+
+            Button(
+                onClick = { viewModel.save() },
+                modifier = Modifier.weight(1f)
+            ) { Text("Guardar") }
         }
+
+        // Mostrar el Snackbar con estilo personalizado
+        SnackbarHost(
+            hostState = snackbarHostState,
+            snackbar = { data ->
+                androidx.compose.material3.Snackbar(
+                    snackbarData = data,
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    shape = MaterialTheme.shapes.medium
+                )
+            }
+        )
     }
 }
