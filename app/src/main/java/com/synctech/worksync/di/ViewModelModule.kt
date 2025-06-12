@@ -7,6 +7,7 @@ import com.synctech.worksync.di.Qualifiers.jobByID
 import com.synctech.worksync.di.Qualifiers.jobMediator
 import com.synctech.worksync.di.Qualifiers.logout
 import com.synctech.worksync.di.Qualifiers.updateSession
+import com.synctech.worksync.ui.screens.addJobPanel.AddJobViewModel
 import com.synctech.worksync.ui.screens.detailPanel.JobDetailViewModel
 import com.synctech.worksync.ui.screens.inventoryPanel.InventoryViewModel
 import com.synctech.worksync.ui.screens.jobsPanel.JobsViewModel
@@ -33,6 +34,12 @@ val viewModelModule = module {
     viewModel {
         JobsViewModel(
             jobsRepository = get(jobMediator), sessionCache = get(activeSession)
+        )
+    }
+
+    viewModel {
+        AddJobViewModel(
+            jobsRepository = get(jobMediator)
         )
     }
 }

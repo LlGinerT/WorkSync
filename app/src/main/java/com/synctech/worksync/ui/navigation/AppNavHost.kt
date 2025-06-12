@@ -1,5 +1,3 @@
-
-
 package com.synctech.worksync.ui.navigation
 
 import androidx.compose.runtime.Composable
@@ -7,7 +5,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import com.synctech.worksync.ui.components.JobScaffold
 import com.synctech.worksync.ui.components.MainScaffold
+import com.synctech.worksync.ui.screens.addJobPanel.AddJobScreen
+import com.synctech.worksync.ui.screens.addJobPanel.AddJobViewModel
 import com.synctech.worksync.ui.screens.detailPanel.JobDetailScreen
 import com.synctech.worksync.ui.screens.detailPanel.JobDetailViewModel
 import com.synctech.worksync.ui.screens.inventoryPanel.InventoryViewModel
@@ -33,29 +34,36 @@ fun AppNavHost() {
                     navController.navigate("main/userPanel") {
                         popUpTo("login") { inclusive = true }
                     }
-                },
-                viewModel = loginViewModel
+                }, viewModel = loginViewModel
             )
         }
 
         navigation(startDestination = "main/userPanel", route = "main") {
             composable("main/jobs") {
-                MainScaffold(navController) { modifier ->
+                JobScaffold(navController) { modifier ->
                     val viewModel = koinViewModel<JobsViewModel>()
                     JobScreen(
-                        viewModel = viewModel,
-                        navController = navController,
-                        modifier = modifier
+                        viewModel = viewModel, navController = navController, modifier = modifier
                     )
                 }
+            }
+            composable("main/addJob") {
+                val viewModel = koinViewModel<AddJobViewModel>()
+                AddJobScreen(viewModel = viewModel, onSave = {
+                    navController.navigate("main/jobs") {
+                        popUpTo("main/addJob") { inclusive = true }
+                    }
+                }, onCancel = {
+                    navController.navigate("main/jobs") {
+                        popUpTo("main/addJob") { inclusive = true }
+                    }
+                })
             }
             composable("main/inventory") {
                 MainScaffold(navController) { modifier ->
                     val viewModel = koinViewModel<InventoryViewModel>()
                     MaterialScreen(
-                        viewModel = viewModel,
-                        navController = navController,
-                        modifier = modifier
+                        viewModel = viewModel, navController = navController, modifier = modifier
                     )
                 }
             }
@@ -75,9 +83,7 @@ fun AppNavHost() {
                 val jobId = backStackEntry.arguments?.getString("jobId") ?: ""
                 val viewModel = koinViewModel<JobDetailViewModel>()
                 JobDetailScreen(
-                    jobDetailViewModel = viewModel,
-                    jobId = jobId,
-                    navController = navController
+                    jobDetailViewModel = viewModel, jobId = jobId, navController = navController
                 )
             }
         }
